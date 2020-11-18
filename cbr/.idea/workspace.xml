@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="3a3ed838-e859-40c3-8891-87dbcf5d17ee" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ProjectId" id="1dg80uFli7Ml0SYxNwqrJRBXfgu" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="show.unlinked.gradle.project.popup" value="true" />
+  </component>
+  <component name="RunManager">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="cbr.Main" />
+      <module name="cbr.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="cbr.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration" cleanupOnStartRun="true">
+    <configuration>C:\Users\lydia\AppData\Roaming\Subversion</configuration>
+    <supportedVersion>125</supportedVersion>
+  </component>
+  <component name="SvnFileUrlMappingImpl">
+    <option name="myMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="D:\Informatik\WBS\cbr" />
+          <option name="myCopyRoot" value="D:\Informatik\WBS\cbr" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+    <option name="myMoreRealMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="D:\Informatik\WBS\cbr" />
+          <option name="myCopyRoot" value="D:\Informatik\WBS\cbr" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3a3ed838-e859-40c3-8891-87dbcf5d17ee" name="Default Changelist" comment="" />
+      <created>1592835155620</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1592835155620</updated>
+      <workItem from="1592835159846" duration="9276000" />
+      <workItem from="1593009982284" duration="5926000" />
+      <workItem from="1593097178464" duration="3481000" />
+      <workItem from="1593100713345" duration="33000" />
+      <workItem from="1594043243810" duration="1062000" />
+    </task>
+    <task id="LOCAL-00001">
+      <created>1592850230205</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1592850230205</updated>
+    </task>
+    <task id="LOCAL-00002">
+      <created>1592853833302</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1592853833302</updated>
+    </task>
+    <task id="LOCAL-00003">
+      <created>1592853931692</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1592853931692</updated>
+    </task>
+    <task id="LOCAL-00004">
+      <created>1592854488140</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1592854488140</updated>
+    </task>
+    <task id="LOCAL-00005">
+      <created>1592854668037</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1592854668037</updated>
+    </task>
+    <task id="LOCAL-00006">
+      <created>1592856784480</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1592856784480</updated>
+    </task>
+    <task id="LOCAL-00007">
+      <created>1593012281765</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1593012281765</updated>
+    </task>
+    <task id="LOCAL-00008">
+      <created>1593012771521</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1593012771521</updated>
+    </task>
+    <task id="LOCAL-00009">
+      <created>1593013689089</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1593013689089</updated>
+    </task>
+    <task id="LOCAL-00010">
+      <created>1593014641116</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1593014641116</updated>
+    </task>
+    <task id="LOCAL-00011">
+      <created>1593097761722</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1593097761722</updated>
+    </task>
+    <task id="LOCAL-00012">
+      <created>1593098500062</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1593098500062</updated>
+    </task>
+    <task id="LOCAL-00013">
+      <created>1593098534115</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1593098534115</updated>
+    </task>
+    <task id="LOCAL-00014">
+      <created>1593098850485</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1593098850485</updated>
+    </task>
+    <task id="LOCAL-00015">
+      <created>1593099072548</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1593099072548</updated>
+    </task>
+    <task id="LOCAL-00016">
+      <created>1593099718795</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1593099718795</updated>
+    </task>
+    <task id="LOCAL-00017">
+      <created>1593099892883</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1593099892883</updated>
+    </task>
+    <task id="LOCAL-00018">
+      <created>1593100020766</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1593100020766</updated>
+    </task>
+    <task id="LOCAL-00019">
+      <created>1593100197424</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1593100197424</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="LAST_COMMIT_MESSAGE" value="" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="740" y="53" key="CommitChangelistDialog2" timestamp="1593100196020">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="740" y="53" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1593100196020" />
+    <state x="1220" y="279" key="FileChooserDialogImpl" timestamp="1593100737521">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="1220" y="279" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1593100737521" />
+    <state width="914" height="344" key="GridCell.Tab.0.bottom" timestamp="1593100685068">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="914" height="344" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1593100685068" />
+    <state width="914" height="344" key="GridCell.Tab.0.center" timestamp="1593100685068">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="914" height="344" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1593100685068" />
+    <state width="914" height="344" key="GridCell.Tab.0.left" timestamp="1593100685068">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="914" height="344" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1593100685068" />
+    <state width="914" height="344" key="GridCell.Tab.0.right" timestamp="1593100685068">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="914" height="344" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1593100685068" />
+    <state width="914" height="344" key="GridCell.Tab.1.bottom" timestamp="1593100685068">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="914" height="344" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1593100685068" />
+    <state width="914" height="344" key="GridCell.Tab.1.center" timestamp="1593100685068">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="914" height="344" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1593100685068" />
+    <state width="914" height="344" key="GridCell.Tab.1.left" timestamp="1593100685068">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="914" height="344" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1593100685068" />
+    <state width="914" height="344" key="GridCell.Tab.1.right" timestamp="1593100685068">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="914" height="344" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1593100685068" />
+    <state x="1136" y="345" key="com.intellij.ide.util.TipDialog" timestamp="1593100714731">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="1136" y="345" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1593100714731" />
+    <state x="1263" y="426" key="svn.upgradeDialog" timestamp="1593100741380">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="1263" y="426" key="svn.upgradeDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1593100741380" />
+    <state x="1193" y="387" key="svn4idea.checkout.options" timestamp="1593100740355">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="1193" y="387" key="svn4idea.checkout.options/0.0.1920.1040@0.0.1920.1040" timestamp="1593100740355" />
+  </component>
+</project>

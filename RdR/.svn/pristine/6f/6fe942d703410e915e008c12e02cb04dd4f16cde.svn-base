@@ -1,0 +1,186 @@
+package rdr;
+
+import weka.core.Instances;
+import weka.core.converters.ConverterUtils.DataSource;
+
+import java.io.InputStream;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        //Node exampleRule = new Node("Eiche").withExcept(new Node("Blätter - Blattrand", "gesägt", "Buche"));
+        //Node exampleRule = new Node("Blätter - Blattanordnung", "gegenständig", "Eiche").withElse(new Node("Blätter - Blattform", "herzförmig", "Linde")).withElse(new Node("Blätter - Blattrand", "relativ glattrandig", "Buche"));
+        /*Map<String, String> facts = new HashMap<>();
+        facts.put("Blätter - Blattanordnung", "gegenständig");
+        facts.put("Blätter - Blattform", "rund oder eliptisch");
+        facts.put("Blätter - Blattrand", "gesägt");
+        facts.put("Stamm - Stammoberfläche", "glatt");
+        facts.put("Blätter - Blattanordnung", "wechselständig");
+        facts.put("Blätter - Blattform", "rund oder eliptisch");
+        facts.put("Blätter - Blattrand", "relativ glattrandig");
+        facts.put("Stamm - Stammoberfläche", "glatt");
+
+        //System.out.println(solve(exampleRule, facts));
+        System.out.println(solve(getRules(), facts));*/
+        Map<String, String> facts2 = new HashMap<>();
+        facts2.put("Blätter - Blattanordnung", "wechselständig");
+        facts2.put("Blätter - Blattform", "rund oder eliptisch");
+        facts2.put("Blätter - Blattrand", "relativ glattrandig");
+        facts2.put("Stamm - Stammoberfläche", "rissig");
+        System.out.println(solve(getRules(), facts2) + "Eiche");
+        Map<String, String> facts3 = new HashMap<>();
+        facts3.put("Blätter - Blattanordnung", "wechselständig");
+        facts3.put("Blätter - Blattform", "rund oder eliptisch");
+        facts3.put("Blätter - Blattrand", "relativ glattrandig");
+        facts3.put("Stamm - Stammoberfläche", "tiefrissig");
+        System.out.println(solve(getRules(), facts3) + "Eiche");
+        Map<String, String> facts4 = new HashMap<>();
+        facts4.put("Blätter - Blattanordnung", "wechselständig");
+        facts4.put("Blätter - Blattform", "rund oder eliptisch");
+        facts4.put("Blätter - Blattrand", "relativ glattrandig");
+        facts4.put("Stamm - Stammoberfläche", "glatt");
+        System.out.println(solve(getRules(), facts4) + "Buche");
+        Map<String, String> facts5 = new HashMap<>();
+        facts5.put("Blätter - Blattanordnung", "wechselständig");
+        facts5.put("Blätter - Blattform", "rund oder eliptisch");
+        facts5.put("Blätter - Blattrand", "gesägt");
+        facts5.put("Stamm - Stammoberfläche", "glatt");
+        System.out.println(solve(getRules(), facts5) + "Buche");
+        Map<String, String> facts6 = new HashMap<>();
+        facts6.put("Blätter - Blattanordnung", "wechselständig");
+        facts6.put("Blätter - Blattform", "herzförmig");
+        facts6.put("Blätter - Blattrand", "gesägt");
+        facts6.put("Stamm - Stammoberfläche", "rissig");
+        System.out.println(solve(getRules(), facts6) + "Linde");
+        Map<String, String> facts7 = new HashMap<>();
+        facts7.put("Blätter - Blattanordnung", "wechselständig");
+        facts7.put("Blätter - Blattform", "herzförmig");
+        facts7.put("Blätter - Blattrand", "gesägt");
+        facts7.put("Stamm - Stammoberfläche", "tiefrissig");
+        System.out.println(solve(getRules(), facts7) + "Linde");
+        Map<String, String> facts8 = new HashMap<>();
+        facts8.put("Blätter - Blattanordnung", "gegenständig");
+        facts8.put("Blätter - Blattform", "rund oder eliptisch");
+        facts8.put("Blätter - Blattrand", "gesägt");
+        facts8.put("Stamm - Stammoberfläche", "rissig");
+        System.out.println(solve(getRules(), facts8) + "Esche");
+        Map<String, String> facts9 = new HashMap<>();
+        facts9.put("Blätter - Blattanordnung", "gegenständig");
+        facts9.put("Blätter - Blattform", "rund oder eliptisch");
+        facts9.put("Blätter - Blattrand", "gesägt");
+        facts9.put("Stamm - Stammoberfläche", "glatt");
+        System.out.println(solve(getRules(), facts9) + "Esche");
+        Map<String, String> facts0 = new HashMap<>();
+        facts0.put("Blätter - Blattanordnung", "gegenständig");
+        facts0.put("Blätter - Blattform", "dreieckig");
+        facts0.put("Blätter - Blattrand", "gesägt");
+        facts0.put("Stamm - Stammoberfläche", "rissig");
+        System.out.println(solve(getRules(), facts0) + "Birke");
+        Map<String, String> factse = new HashMap<>();
+        factse.put("Blätter - Blattanordnung", "wechselständig");
+        factse.put("Blätter - Blattform", "dreieckig");
+        factse.put("Blätter - Blattrand", "gesägt");
+        factse.put("Stamm - Stammoberfläche", "tiefrissig");
+        System.out.println(solve(getRules(), factse) + "Birke");
+        Map<String, String> factsf = new HashMap<>();
+        factsf.put("Blätter - Blattanordnung", "gegenständig");
+        factsf.put("Blätter - Blattform", "rund oder eliptisch");
+        factsf.put("Blätter - Blattrand", "gesägt");
+        factsf.put("Stamm - Stammoberfläche", "tiefrissig");
+        System.out.println(solve(getRules(), factsf) + "Birke");
+
+        InputStream inputStream = Main.class.getResourceAsStream("baeume.arff");
+        DataSource dataSource = new DataSource(inputStream);
+        Instances instances = dataSource.getDataSet();
+        double accuracy = computeAccuracy(instances);
+        System.out.println(accuracy);
+    }
+
+    public static Optional<String> solve(Node n, Map<String, String> facts) {
+        /*if (n.condition.isPresent()) {
+            if (facts.containsKey(n.condition.get().attribute) && facts.get(n.condition.get().attribute).equals(n.condition.get().value)) {
+                if (n.exceptNode.isPresent()) {
+                    return solve(n.exceptNode.get(), facts);
+                } else return Optional.of(n.conclusion);
+            } else if (n.elseNode.isPresent()) {
+                return solve(n.elseNode.get(), facts);
+            } else {
+                return Optional.of(n.conclusion);
+            }
+        } else {*/
+        if (n.exceptNode.isPresent() && n.exceptNode.get().condition.isPresent()
+                && facts.containsKey(n.exceptNode.get().condition.get().attribute) && facts.get(n.exceptNode.get().condition.get().attribute).equals(n.exceptNode.get().condition.get().value)) {
+            Node except = n.exceptNode.get();
+            if (except.exceptNode.isPresent() || except.elseNode.isPresent()) {
+                return solve(except, facts);
+            } else return Optional.of(except.conclusion);
+        } else if ((n.elseNode.isPresent() && n.elseNode.get().condition.isPresent()
+                && facts.containsKey(n.elseNode.get().condition.get().attribute) && facts.get(n.elseNode.get().condition.get().attribute).equals(n.elseNode.get().condition.get().value))) {
+            Node elseN = n.exceptNode.get();
+            if (elseN.exceptNode.isPresent() || elseN.elseNode.isPresent()) {
+                return solve(elseN, facts);
+            } else return Optional.of(elseN.conclusion);
+        } else return Optional.of(n.conclusion);
+    }
+
+        /*if (n.exceptNode.isPresent()) {
+            Node except = n.exceptNode.get();
+            if (n.condition.isPresent()) {
+                if (facts.containsKey(except.condition.get().attribute) && facts.get(except.condition.get().attribute).equals(except.condition.get().value)) {
+                    if (except.exceptNode.isEmpty() && except.elseNode.isEmpty()) {
+                        return Optional.of(except.conclusion);
+                    } else return solve(except, facts);
+                } else if (n.elseNode.isPresent()) {
+                    Node elseN = n.elseNode.get();
+                    if (facts.containsKey(elseN.condition.get().attribute) && facts.get(elseN.condition.get().attribute).equals(elseN.condition.get().value)) {
+                        if (elseN.exceptNode.isEmpty() && elseN.elseNode.isEmpty()) {
+                            return Optional.of(elseN.conclusion);
+                        } else return solve(elseN, facts);
+                    } else return Optional.empty();
+                } else return Optional.empty();
+            } else if (n.elseNode.isPresent()) {
+                Node elseN = n.elseNode.get();
+                if (facts.containsKey(elseN.condition.get().attribute) && facts.get(elseN.condition.get().attribute).equals(elseN.condition.get().value)) {
+                    if (elseN.exceptNode.isEmpty() && elseN.elseNode.isEmpty()) {
+                        return Optional.of(elseN.conclusion);
+                    } else return solve(elseN, facts);
+                } else return Optional.empty();
+            } else return Optional.of(n.conclusion);
+        } else return Optional.empty();
+    }*/
+
+    public static Node getRules() {
+        Node result= new Node("Birke").withExcept(new Node("Blätter - Blattrand", "relativ glattrandig", "Eiche")
+                .withExcept(new Node("Stamm - Stammoberfläche", "glatt", "Buche"))
+                .withElse(new Node("Blätter - Blattform", "herzförmig", "Linde")
+                        .withElse(new Node("Blätter - Blattform", "rund oder eliptisch", "Esche")
+                                .withExcept(new Node("Blätter - Blattanordnung", "wechselständig", "Buche")
+                                        .withElse(new Node("Stamm - Stammoberfläche", "tiefrissig", "Birke"))))));
+        /*.withExcept(new Node("Blätter - Blattanordnung", "wechselständig", "Birke")
+
+                        .withExcept(new Node("Blätter - Blattform", "herzförmig", "Linde"))
+                        .withElse(new Node("Birke")
+                                .withExcept(new Node("Blätter - Blattform", "dreieckig", "Birke"))
+                                .withElse(new Node("Blätter - Blattform", "rund oder eliptisch", "Buche")
+                                        .withExcept(new Node("Stamm - Stammoberfläche", "glatt", "Buche"))
+                                        .withElse(new Node("Eiche")))
+
+                        )
+                )
+                .withElse(new Node("Blätter - Blattanordnung", "gegenständig", "Birke")
+
+                        .withExcept(new Node("Blätter - Blattform", "dreieckig", "Birke"))
+                        .withElse(new Node("Blätter - Blattform", "rund oder eliptisch", "Esche")
+                                .withExcept(new Node("Stamm - Stammoberfläche", "tiefrissig", "Birke"))
+                                .withElse(new Node("Esche")
+                                        .withExcept(new Node("Stamm - Stammoberfläche", "rissig", "Esche"))
+                                        .withElse(new Node("Stamm - Stammoberfläche", "glatt", "Esche"))
+                                )
+                        )*/
+        return result;
+    }
+
+    public static double computeAccuracy(Instances instances) {
+        return 0;
+    }
+}

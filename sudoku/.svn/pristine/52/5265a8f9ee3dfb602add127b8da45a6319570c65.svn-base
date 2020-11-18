@@ -1,0 +1,134 @@
+package sudoku;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+public class Constraint {
+
+    private final Set<String> variableNames = new HashSet<>();
+
+    public Constraint(Set<String> variableNames) {
+        this.variableNames.addAll(variableNames);
+    }
+
+    public Set<String> variables() {
+        return new HashSet<>(variableNames);
+    }
+
+    @Override
+    public String toString() {
+        return "AllDiff(" + variableNames.stream().sorted().collect(Collectors.joining(", ")) + ")";
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return (other instanceof Constraint) && variableNames.equals(((Constraint) other).variableNames);
+    }
+
+    @Override
+    public int hashCode() {
+        return variableNames.hashCode();
+    }
+
+    public static Set<Constraint> getConstraints() {
+      Set<Constraint> result = new HashSet<>();
+      result.addAll(getSquareConstraints());
+      result.addAll(getColumnConstraints());
+      result.addAll(getRowConstraints());
+      return result;
+    }
+
+    public static Set<Constraint> getSquareConstraints() {
+        Set<Constraint> result = new HashSet<>();
+        for (int i = 1; i <= 3; i++) {
+            Set<String> constrains = new HashSet<>();
+            for (int j = 1; j <= 3; j++) {
+                constrains.add(String.valueOf(i + j));
+            }
+            result.add(new Constraint(constrains));
+        }
+        for (int i = 1; i <= 3; i++) {
+            Set<String> constrains = new HashSet<>();
+            for (int j = 4; j <= 6; j++) {
+                constrains.add(String.valueOf(i + j));
+            }
+            result.add(new Constraint(constrains));
+        }
+        for (int i = 1; i <= 3; i++) {
+            Set<String> constrains = new HashSet<>();
+            for (int j = 7; j <= 9; j++) {
+                constrains.add(String.valueOf(i + j));
+            }
+            result.add(new Constraint(constrains));
+        }
+        for (int i = 4; i <= 6; i++) {
+            Set<String> constrains = new HashSet<>();
+            for (int j = 1; j <= 3; j++) {
+                constrains.add(String.valueOf(i + j));
+            }
+            result.add(new Constraint(constrains));
+        }
+        for (int i = 4; i <= 6; i++) {
+            Set<String> constrains = new HashSet<>();
+            for (int j = 4; j <= 6; j++) {
+                constrains.add(String.valueOf(i + j));
+            }
+            result.add(new Constraint(constrains));
+        }
+        for (int i = 4; i <= 6; i++) {
+            Set<String> constrains = new HashSet<>();
+            for (int j = 7; j <= 9; j++) {
+                constrains.add(String.valueOf(i + j));
+            }
+            result.add(new Constraint(constrains));
+        }
+        for (int i = 7; i <= 9; i++) {
+            Set<String> constrains = new HashSet<>();
+            for (int j = 1; j <= 3; j++) {
+                constrains.add(String.valueOf(i + j));
+            }
+            result.add(new Constraint(constrains));
+        }
+        for (int i = 7; i <= 9; i++) {
+            Set<String> constrains = new HashSet<>();
+            for (int j = 4; j <= 6; j++) {
+                constrains.add(String.valueOf(i + j));
+            }
+            result.add(new Constraint(constrains));
+        }
+        for (int i = 7; i <= 9; i++) {
+            Set<String> constrains = new HashSet<>();
+            for (int j = 7; j <= 9; j++) {
+                constrains.add(String.valueOf(i + j));
+            }
+            result.add(new Constraint(constrains));
+        }
+        return result;
+    }
+
+    public static Set<Constraint> getColumnConstraints() {
+        Set<Constraint> result = new HashSet<>();
+        for (int i = 1; i <= 9; i++) {
+            Set<String> constrains = new HashSet<>();
+            for (int j = 1; j <= 9; j++) {
+                constrains.add(String.valueOf(i + j));
+            }
+            result.add(new Constraint(constrains));
+        }
+        return result;
+    }
+
+    public static Set<Constraint> getRowConstraints() {
+        Set<Constraint> result = new HashSet<>();
+        for (int i = 1; i <= 9; i++) {
+            Set<String> constrains = new HashSet<>();
+            for (int j = 1; j <= 9; j++) {
+                constrains.add(String.valueOf(j + i));
+            }
+            result.add(new Constraint(constrains));
+        }
+        return result;
+    }
+
+}

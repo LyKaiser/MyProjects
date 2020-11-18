@@ -1,0 +1,108 @@
+package cbr;
+
+import cbr.attribute.Attribute;
+import cbr.attribute.ChoiceAttribute;
+import cbr.attribute.NumAttribute;
+import cbr.attribute.distance.NumericAttributeDistance;
+import cbr.instance.DataInstance;
+import cbr.instance.distance.InstanceDistance;
+import cbr.instance.distance.SimpleDistanceFunction;
+import cbr.instance.distance.WeightedDistanceFunction;
+import cbr.io.DataLoader;
+import cbr.value.Value;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import weka.core.Instances;
+import weka.core.converters.ConverterUtils;
+
+import java.awt.font.NumericShaper;
+import java.io.InputStream;
+import java.util.*;
+
+public class Main {
+
+  public static void main(String[] args) throws Exception {
+    InputStream catalogStream = Main.class.getResourceAsStream("Laubbaum.xlsx");
+    Workbook workbook = WorkbookFactory.create(catalogStream);
+    Sheet excelSheet = workbook.getSheetAt(0);
+
+    InputStream arffStream = Main.class.getResourceAsStream("baeume.arff");
+    ConverterUtils.DataSource dataSource = new ConverterUtils.DataSource(arffStream);
+    Instances instances = dataSource.getDataSet();
+
+    DataLoader dataLoader = DataLoader.loadData(excelSheet, instances);
+
+    String targetAttribute = "Baumgattung";
+
+    int index = 0;
+    ArrayList<DataInstance> dataInstancesCopy = new ArrayList<>(dataLoader.getDataInstances());
+    DataInstance dataInstanceToClassify = getCopyWithRemovedAttribute(dataInstancesCopy.get(index), targetAttribute);
+    dataInstancesCopy.remove(index);
+
+    SimpleDistanceFunction simpleDistanceFunction = new SimpleDistanceFunction(dataLoader.getAttributes(),
+            getAttrNames2distance());
+
+    WeightedDistanceFunction weightedDistanceFunction = new WeightedDistanceFunction(dataLoader.getAttributes(),
+            getAttrNames2distance(), getWeights());
+
+    System.out.println(classify(dataLoader.getDataInstances(), dataLoader.getAttributes(), dataInstanceToClassify,
+            targetAttribute, simpleDistanceFunction));
+    System.out.println(classify(dataLoader.getDataInstances(), dataLoader.getAttributes(), dataInstanceToClassify,
+            targetAttribute, weightedDistanceFunction));
+
+    System.out.println(getCrossValidatedAccuracy(dataLoader.getDataInstances(), dataLoader.getAttributes(),
+            targetAttribute, simpleDistanceFunction));
+    System.out.println(getCrossValidatedAccuracy(dataLoader.getDataInstances(), dataLoader.getAttributes(),
+            targetAttribute, weightedDistanceFunction));
+  }
+
+  public static Value classify(List<DataInstance> dataInstances, Map<String, Attribute> attributes,
+          DataInstance dataInstanceToClassify, String attributeName, InstanceDistance distanceFunction) {
+    return null;
+  }
+
+  public static double getCrossValidatedAccuracy(List<DataInstance> dataInstances, Map<String, Attribute> attributes,
+          String targetAttribute, InstanceDistance distanceFunction) {
+    return 0;
+  }
+
+  public static HashMap<String, Double> getWeights() {
+    HashMap<String, Double> weights = new HashMap<>();
+    weights.put("Blätter - Blattanordnung", 0.5);
+    weights.put("Blätter - Länge", 5.0);
+    weights.put("Blätter - Blattform", 2.0);
+    weights.put("Früchte und Blüten - Blüten", 4.0);
+    weights.put("Höhe", 5.0);
+    return weights;
+  }
+
+  public static HashMap<String, HashMap<Set<String>, Double>> getAttrNames2distance() {
+    HashMap<String, HashMap<Set<String>, Double>> attrNames2distances = new HashMap<>();
+
+    HashMap<Set<String>, Double> stammFarbe = new HashMap<>();
+    stammFarbe.put(toSet("braun", "grau-braun"), 0.3);
+    stammFarbe.put(toSet("grün", "grau-grün"), 0.3);
+    stammFarbe.put(toSet("grau", "grau-grün"), 0.5);
+    stammFarbe.put(toSet("braun", "dunkelbraun bis schwarz"), 0.8);
+    attrNames2distances.put("Stamm - Stammfarbe", stammFarbe);
+
+    HashMap<Set<String>, Double> stammOberflaeche = new HashMap<>();
+    stammOberflaeche.put(toSet("rissig", "tiefrissig"), 0.3);
+    stammOberflaeche.put(toSet("rissig", "schuppig"), 0.8);
+    attrNames2distances.put("Stamm - Stammoberfläche", stammOberflaeche);
+
+    return attrNames2distances;
+  }
+
+  private static Set<String> toSet(String... strings) {
+    return new HashSet<>(Arrays.asList(strings));
+  }
+
+  private static DataInstance getCopyWithRemovedAttribute(DataInstance instanceToCopy, String attributeToRemove) {
+    Map<String, Value> data = new HashMap<>(instanceToCopy.getData());
+    data.remove(attributeToRemove);
+    return new DataInstance(data);
+  }
+
+}

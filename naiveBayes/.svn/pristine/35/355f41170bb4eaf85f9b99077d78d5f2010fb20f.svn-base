@@ -1,0 +1,43 @@
+package naive_bayes.io;
+
+import naive_bayes.DataInstance;
+import naive_bayes.attribute.Attribute;
+import org.apache.poi.ss.usermodel.Sheet;
+import weka.core.Instances;
+
+import java.util.List;
+import java.util.Map;
+
+public class DataLoader {
+
+  private final Map<String, Attribute> attributes;
+
+  private final List<DataInstance> dataInstances;
+
+  public DataLoader(Map<String, Attribute> attributes, List<DataInstance> dataInstances) {
+    this.attributes = attributes;
+    this.dataInstances = dataInstances;
+  }
+
+  public Map<String, Attribute> getAttributes() {
+    return attributes;
+  }
+
+  public List<DataInstance> getDataInstances() {
+    return dataInstances;
+  }
+
+  public static DataLoader loadData(Sheet excelSheet, Instances instances) {
+    Map<String, Attribute> attributes = loadAttributes(excelSheet);
+    List<DataInstance> dataInstances = loadDataInstances(attributes, instances);
+    return new DataLoader(attributes, dataInstances);
+  }
+
+  private static Map<String, Attribute> loadAttributes(Sheet excelSheet) {
+    return null;
+  }
+
+  private static List<DataInstance> loadDataInstances(Map<String, Attribute> attributes, Instances instances) {
+    return null;
+  }
+}

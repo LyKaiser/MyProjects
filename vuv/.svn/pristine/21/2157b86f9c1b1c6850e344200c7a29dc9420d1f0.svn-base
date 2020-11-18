@@ -1,0 +1,132 @@
+package vuv;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class Main {
+
+  public static void main(String[] args) throws Exception {
+
+    final StartData sd = Import.importStream(Main.class.getResourceAsStream("field.csv"));
+    System.out.println(sd.courses);
+    System.out.println(sd.students);
+
+    final Map<Student, Course> assignments = solve(sd);
+//    final Map<Student, Course> assignments = solveAdvanced(sd);
+    System.out.print("    ");
+    for (final Course c : sd.courses) {
+      System.out.print(String.format("%5s", c.name));
+    }
+    System.out.println();
+
+    for (final Student s : sd.students) {
+      System.out.print(String.format("%4s", s.name));
+      for (final Course c : sd.courses) {
+        if (assignments.get(s).equals(c)) {
+          System.out.print("    x");
+        } else {
+          System.out.print("     ");
+        }
+      }
+      System.out.println();
+    }
+  }
+
+  // Part 1:
+
+  public static List<Student> sortStudents(StartData d) {
+  List<Student> students = d.students;
+  List<Course> courses = d.courses;
+
+  List coursesNew = courses.stream()
+          .sorted()
+          .map(course -> course.capacity)
+          .collect(Collectors.toList());
+
+  List<Student> result = new ArrayList<>();
+  for (Object o : coursesNew){
+    Course course = (Course) o;
+    for (Student s : students){
+      List<Course> cou = s.courses;
+      for (Course c : cou){
+        if (c.equals(course)&&c.capacity==1){
+          result.add(s);
+        }
+      }
+    }
+  }
+  return result;
+
+  /*Map<String,Course> firstVote = new HashMap<>();
+  for (Student s : students){
+    List<Course> courseList = s.courses;
+    for (Course c : courseList){
+      if (c.capacity == 1){
+        firstVote.put(s.name,c);
+      }
+    }
+  }
+
+  courses.sort(Comparator.comparingInt(Course::hashCode));
+
+  List<Student> result = new ArrayList<>();
+  for (Course course : courses){
+    for (Course cou : firstVote.values()){
+      if (cou.equals(course)){
+
+      }
+    }
+  }*/
+
+
+
+
+  }
+
+  public static Course getBestCourse(StartData d, Map<Student, Course> assignments, Student s) {
+    return null;
+  }
+
+  public static Student getWorstAssignedStudent(Map<Student, Course> assignments) {
+    return null;
+  }
+
+  public static List<Swap> getAllSwaps(Student s, Map<Student, Course> assignments) {
+    return null;
+  }
+
+  public static double getScore(Swap swap) {
+    return 0;
+  }
+
+  public static Swap getBestSwap(List<Swap> swaps) {
+    return null;
+  }
+
+  public static Map<Student, Course> solve(StartData d) {
+    return null;
+  }
+
+  // Part 2:
+
+  public static <T> List<List<T>> perms(Set<T> pool, int depthRemaining) {
+    return null;
+  }
+
+  public static List<Swaps> getAllSwaps(int depth, Map<Student, Course> assignments) {
+    return null;
+  }
+
+  public static double getScore(Swaps swaps) {
+    return 0;
+  }
+
+  public static Student getMostUrgentStudent(Set<Student> students, Map<Student, Course> assignments) {
+    return null;
+  }
+
+  public static Map<Student, Course> solveAdvanced(StartData d) {
+    return null;
+  }
+
+}

@@ -1,0 +1,125 @@
+package naive_bayes;
+
+import naive_bayes.attribute.Attribute;
+import naive_bayes.attribute.ChoiceAttribute;
+import naive_bayes.attribute.NumAttribute;
+import naive_bayes.io.DataLoader;
+import naive_bayes.value.ChoiceValue;
+import naive_bayes.value.NumValue;
+import naive_bayes.value.Value;
+import naive_bayes.value.ValueVisitor;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import weka.core.Instances;
+import weka.core.converters.ConverterUtils.DataSource;
+
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+
+public class Main {
+
+    public static void main(String[] args) throws Exception {
+        InputStream catalogStream = Main.class.getResourceAsStream("Laubbaum.xlsx");
+        Workbook workbook = WorkbookFactory.create(catalogStream);
+        Sheet excelSheet = workbook.getSheetAt(0);
+
+        InputStream arffStream = Main.class.getResourceAsStream("Baeume.arff");
+        DataSource dataSource = new DataSource(arffStream);
+        Instances instances = dataSource.getDataSet();
+
+        DataLoader dataLoader = DataLoader.loadData(excelSheet, instances);
+
+        System.out.println(category(new NumAttribute(17.0, 90.0), new NumValue(25.0)));
+
+        System.out.println(dataLoader.getAttributes());
+
+        System.out.println(count(dataLoader.getDataInstances(), "Blätter - Blattform", dataLoader.getAttributes(),
+                new ChoiceValue("dreieckig")));
+        System.out.println(count(dataLoader.getDataInstances(), "Blätter - Länge [cm]", dataLoader.getAttributes(),
+                new NumValue(0.0)));
+
+        System.out.println(probability(dataLoader.getDataInstances(), dataLoader.getAttributes(),
+                dataLoader.getDataInstances().get(0), "Blätter - Blattanordnung", new ChoiceValue("wechselständig")));
+        System.out.println(probability(dataLoader.getDataInstances(), dataLoader.getAttributes(),
+                dataLoader.getDataInstances().get(0), "Blätter - Blattanordnung", new ChoiceValue("gegenständig")));
+
+        System.out.println(classify(dataLoader.getDataInstances(), dataLoader.getAttributes(),
+                dataLoader.getDataInstances().get(0), "Baumgattung"));
+        System.out.println(classify(dataLoader.getDataInstances(), dataLoader.getAttributes(),
+                dataLoader.getDataInstances().get(1), "Baumgattung"));
+        System.out.println(classify(dataLoader.getDataInstances(), dataLoader.getAttributes(),
+                dataLoader.getDataInstances().get(2), "Baumgattung"));
+    }
+
+    public static Value classify(List<DataInstance> dataInstances, Map<String, Attribute> attributes,
+                                 DataInstance dataInstanceToClassify, String attributeName) {
+        return null;
+    }
+
+    public static double probability(List<DataInstance> dataInstances, Map<String, Attribute> attributes,
+                                     DataInstance dataInstanceToClassify, String attributeName, Value attributeValue) {
+        return 0;
+    }
+
+    public static int count(List<DataInstance> dataInstances, String attributeName, Map<String, Attribute> attributes,
+                            Value attributeValue) {
+        return 0;
+    }
+
+    public static Boolean caseMatches(ValueVisitor<Boolean> matcher, String attributeName, DataInstance dataInstance) {
+        return null;
+    }
+
+    public static ValueVisitor<Boolean> makeMatcher(Attribute attribute, Value value) {
+
+        ValueVisitor<Boolean> visitor =new ValueVisitor<Boolean>() {
+            @Override
+            public Boolean visit(ChoiceValue value) {
+
+                return true;
+            }
+
+            @Override
+            public Boolean visit(NumValue value) {
+                return false;
+            }
+        };
+        /*if (attribute instanceof ChoiceAttribute){
+            ChoiceValue choiceValue = new ChoiceValue(value.toString());
+            for (String val : ((ChoiceAttribute) attribute).getPossibleValues()){
+                ChoiceValue choiceAttr = new ChoiceValue(val);
+                choiceAttr.accept(choiceValue);
+            }
+
+        }else{
+            visitor.visit((NumValue) value);
+        }*/
+        return visitor;
+    }
+
+    public static int category(NumAttribute numAttribute, NumValue numValue) {
+        double min = numAttribute.getMin();
+        double max = numAttribute.getMax();
+        double border = (max - min) / 10;
+        double start = min;
+        double end = min + border;
+        if (numValue.getValue() < start) {
+            return 0;
+        }
+        int counter = 0;
+        while (counter < 10) {
+            if (numValue.getValue() >= start && numValue.getValue() < end) {
+                return counter;
+            } else if (counter == 9 && numValue.getValue() >= end) {
+                return counter;
+            } else {
+                start = end;
+                end = end + border;
+                counter++;
+            }
+        }
+        return counter;
+    }
+}

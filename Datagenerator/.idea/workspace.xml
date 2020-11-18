@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="433521f8-4c43-4d31-a862-622881818056" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ProjectId" id="1brSHL3pqgriIjerCPhXAhMTIk5" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../naiveBayes" />
+    <property name="show.unlinked.gradle.project.popup" value="true" />
+  </component>
+  <component name="SvnConfiguration" cleanupOnStartRun="true">
+    <configuration>C:\Users\lydia\AppData\Roaming\Subversion</configuration>
+    <supportedVersion>125</supportedVersion>
+  </component>
+  <component name="SvnFileUrlMappingImpl">
+    <option name="myMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="D:\Informatik\WBS\Datagenerator" />
+          <option name="myCopyRoot" value="D:\Informatik\WBS\Datagenerator" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+    <option name="myMoreRealMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="D:\Informatik\WBS\Datagenerator" />
+          <option name="myCopyRoot" value="D:\Informatik\WBS\Datagenerator" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="433521f8-4c43-4d31-a862-622881818056" name="Default Changelist" comment="" />
+      <created>1589388631155</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1589388631155</updated>
+      <workItem from="1589388635366" duration="58000" />
+      <workItem from="1589896363207" duration="2709000" />
+      <workItem from="1589912907333" duration="8000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="740" y="262" key="FileChooserDialogImpl" timestamp="1589912913696">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="740" y="262" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1589912913696" />
+    <state x="656" y="345" key="com.intellij.ide.util.TipDialog" timestamp="1589912908700">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="656" y="345" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589912908700" />
+    <state x="783" y="426" key="svn.upgradeDialog" timestamp="1589388687578">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="783" y="426" key="svn.upgradeDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589388687578" />
+    <state x="693" y="387" key="svn4idea.checkout.options" timestamp="1589388686500">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="693" y="387" key="svn4idea.checkout.options/0.0.1920.1040@0.0.1920.1040" timestamp="1589388686500" />
+  </component>
+</project>

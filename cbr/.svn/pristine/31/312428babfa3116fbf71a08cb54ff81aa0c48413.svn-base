@@ -1,0 +1,33 @@
+package cbr.attribute.distance;
+
+import cbr.attribute.NumAttribute;
+import cbr.value.NumValue;
+import cbr.value.Value;
+
+public class NumericAttributeDistance implements AttributeDistance {
+
+  public NumericAttributeDistance(NumAttribute attr) {
+  }
+
+  @Override
+  public double distance(Value v1, Value v2) {
+    if (v1 instanceof NumValue && v2 instanceof NumValue){
+
+      if (((NumValue) v1).getValue() < ((NumValue) v2).getValue()){
+        double dist = ((NumValue) v2).getValue()-((NumValue) v1).getValue();
+        double result = (dist-((NumValue) v1).getValue())/((NumValue) v2).getValue();
+        if (result>=0){
+          return result;
+        }else return 1;
+      }else if (((NumValue) v1).getValue() > ((NumValue) v2).getValue()){
+        double dist =((NumValue) v1).getValue()-((NumValue) v2).getValue();
+        double result = (dist-((NumValue) v2).getValue())/((NumValue) v1).getValue();
+        if (result>=0){
+          return result;
+        }else return 1;
+      }else return 0;
+    }
+    return 1;
+  }
+
+}

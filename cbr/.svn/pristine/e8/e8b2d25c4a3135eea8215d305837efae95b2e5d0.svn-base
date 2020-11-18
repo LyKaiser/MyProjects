@@ -1,0 +1,18 @@
+package cbr.attribute.distance;
+
+import cbr.value.Value;
+
+import java.util.HashMap;
+import java.util.Set;
+
+public class OrdinalAttributeDistance implements AttributeDistance {
+
+  public OrdinalAttributeDistance(HashMap<Set<String>, Double> values2distance) {
+  }
+
+  @Override
+  public double distance(Value v1, Value v2) {
+    return 0;
+  }
+
+}

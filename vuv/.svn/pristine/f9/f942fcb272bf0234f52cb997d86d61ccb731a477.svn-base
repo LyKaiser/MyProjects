@@ -1,0 +1,258 @@
+package vuv;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class Main {
+
+    public static void main(String[] args) throws Exception {
+
+        final StartData sd = Import.importStream(Main.class.getResourceAsStream("field.csv"));
+        System.out.println(sd.courses);
+        System.out.println(sd.students);
+
+        /* List<Student> students = new ArrayList<>();
+        List<Course> courses = new ArrayList<>();
+        courses.add(new Course("c1", 1));
+        courses.add(new Course("c2", 2));
+        courses.add(new Course("c3", 3));
+        courses.add(new Course("c4", 4));
+        courses.add(new Course("c5", 5));
+
+        List<Course> coursesS1 = new ArrayList<>();
+        List<Course> coursesS2 = new ArrayList<>();
+        List<Course> coursesS3 = new ArrayList<>();
+
+        System.out.println(sortStudents(sd));*/
+
+        final Map<Student, Course> assignments = solve(sd);
+        //final Map<Student, Course> assignments = solveAdvanced(sd);
+        System.out.print("    ");
+        for (final Course c : sd.courses) {
+            System.out.print(String.format("%5s", c.name));
+        }
+        System.out.println();
+
+        for (final Student s : sd.students) {
+            System.out.print(String.format("%4s", s.name));
+            for (final Course c : sd.courses) {
+                if (assignments.get(s).equals(c)) {
+                    System.out.print("    x");
+                } else {
+                    System.out.print("     ");
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    // Part 1:
+
+    public static List<Student> sortStudents(StartData d) {
+        List<Student> students = d.students;
+        List<Course> courses = d.courses;
+
+        courses.sort(Comparator.comparing(Course::getCapacity));
+
+
+        List<Student> result = new ArrayList<>();
+        for (Course c : courses) {
+            for (Student s : students) {
+                if (s.courses.get(0).equals(c)) {
+                    result.add(s);
+                }
+            }
+        }
+        return result;
+    }
+
+    public static Course getBestCourse(StartData d, Map<Student, Course> assignments, Student s) {
+        List<Course> studentCourses = s.courses;
+        for (int i = 0; i < studentCourses.size(); i++) {
+            int counter = 0;
+            for (Course course : d.courses) {
+                if (studentCourses.get(i).equals(course)) {
+                    int capacity = course.capacity;
+                    for (Course cou : assignments.values()) {
+                        if (cou.equals(course)) {
+                            counter++;
+                        }
+                    }
+                    if (counter < capacity) {
+                        return course;
+                    }
+                }
+            }
+        }
+        for (Course c : d.courses) {
+            int counter = 0;
+            int capacity = c.capacity;
+            for (Course cou : assignments.values()) {
+                if (cou.equals(c)) {
+                    counter++;
+                }
+            }
+            if (counter < capacity) {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    public static Student getWorstAssignedStudent(Map<Student, Course> assignments) {
+        Student result = null;
+        int score = Integer.MAX_VALUE;
+        Set<Student> students = new HashSet<>(assignments.keySet());
+        for (Student s : students) {
+            List<Course> courses = s.courses;
+            int scoreStudent = 0;
+            for (int i = 0; i < courses.size(); i++) {
+                if (assignments.get(s).equals(courses.get(i))) {
+                    if (i == 0) {
+                        scoreStudent = 50;
+                    } else if (i == 1) {
+                        scoreStudent = 45;
+
+                    } else if (i == 2) {
+                        scoreStudent = 30;
+                    }
+                }
+            }
+            if (scoreStudent < score) {
+                result = s;
+                score = scoreStudent;
+            }
+        }
+        return result;
+    }
+
+    public static List<Swap> getAllSwaps(Student s, Map<Student, Course> assignments) {
+        List<Swap> result = new ArrayList<>();
+        for (Student student : assignments.keySet()) {
+            if (!student.equals(s)) {
+                result.add(new Swap(s, student, assignments.get(s), assignments.get(student)));
+            }
+        }
+        return result;
+    }
+
+    public static double getScore(Swap swap) {
+        Student studA = swap.studentA;
+        Student studB = swap.studentB;
+        int scoreBefore = 0;
+        for (int i = 0; i < studA.courses.size(); i++) {
+            if (swap.courseA.equals(studA.courses.get(i))) {
+                if (i == 0) {
+                    scoreBefore += 50;
+                } else if (i == 1) {
+                    scoreBefore += 45;
+
+                } else if (i == 2) {
+                    scoreBefore += 30;
+                }
+            }
+            if (swap.courseB.equals(studB.courses.get(i))) {
+                if (i == 0) {
+                    scoreBefore += 50;
+                } else if (i == 1) {
+                    scoreBefore += 45;
+
+                } else if (i == 2) {
+                    scoreBefore += 30;
+                }
+            }
+        }
+        int scoreAfter = 0;
+        for (int i = 0; i < studA.courses.size(); i++) {
+            if (swap.courseB.equals(studA.courses.get(i))) {
+                if (i == 0) {
+                    scoreAfter += 50;
+                } else if (i == 1) {
+                    scoreAfter += 45;
+
+                } else if (i == 2) {
+                    scoreAfter += 30;
+                }
+            }
+            if (swap.courseA.equals(studB.courses.get(i))) {
+                if (i == 0) {
+                    scoreAfter += 50;
+                } else if (i == 1) {
+                    scoreAfter += 45;
+
+                } else if (i == 2) {
+                    scoreAfter += 30;
+                }
+            }
+        }
+        return scoreAfter - scoreBefore;
+    }
+
+    public static Swap getBestSwap(List<Swap> swaps) {
+        Swap result = null;
+        double min = Double.MIN_EXPONENT;
+        for (Swap swap : swaps) {
+            double score = getScore(swap);
+            if (score > min) {
+                result = swap;
+                min = score;
+            }
+        }
+        return result;
+    }
+
+    public static Map<Student, Course> solve(StartData d) {
+        List<Student> sortStudents = sortStudents(d);
+        Map<Student, Course> assignments = new HashMap<>();
+        for (Student s : sortStudents) {
+            Course c = getBestCourse(d, new HashMap<>(), s);
+            assignments.put(s, c);
+        }
+        boolean bool = true;
+        while (bool) {
+            Student stud = getWorstAssignedStudent(assignments);
+            List<Swap> swaps = getAllSwaps(stud, assignments);
+            Swap swap = getBestSwap(swaps);
+            if (getScore(swap) > 0) {
+                assignments.put(swap.studentA, swap.courseB);
+                assignments.put(swap.studentB, swap.courseA);
+            } else bool = false;
+        }
+        return assignments;
+    }
+
+    // Part 2:
+
+    public static <T> List<List<T>> perms(Set<T> pool, int depthRemaining) {
+        List<List<T>> result = new ArrayList<>();
+        List<T> list = new ArrayList<>();
+        for (T t : pool) {
+            int counter = depthRemaining;
+            for (T t1 : pool) {
+                if (!t.equals(t1) && counter > 0) {
+                    list.add(t1);
+                }
+                counter--;
+            }
+            result.add(list);
+        }
+        return result;
+    }
+
+    public static List<Swaps> getAllSwaps(int depth, Map<Student, Course> assignments) {
+        return null;
+    }
+
+    public static double getScore(Swaps swaps) {
+        return 0;
+    }
+
+    public static Student getMostUrgentStudent(Set<Student> students, Map<Student, Course> assignments) {
+        return null;
+    }
+
+    public static Map<Student, Course> solveAdvanced(StartData d) {
+        return null;
+    }
+
+}

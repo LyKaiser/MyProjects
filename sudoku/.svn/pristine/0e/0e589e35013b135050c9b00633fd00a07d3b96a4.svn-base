@@ -1,0 +1,135 @@
+package sudoku;
+
+import javax.swing.text.html.Option;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ForkJoinPool;
+
+class Main {
+
+    public static void main(String[] args) {
+        Board b = new Board();
+
+        b = b.set("41", 8);
+        b = b.set("51", 4);
+
+        b = b.set("12", 3);
+        b = b.set("72", 6);
+
+        b = b.set("33", 8);
+
+        b = b.set("24", 1);
+        b = b.set("54", 8);
+        b = b.set("84", 4);
+
+        b = b.set("25", 9);
+        b = b.set("45", 6);
+        b = b.set("65", 2);
+        b = b.set("85", 1);
+
+        b = b.set("26", 5);
+        b = b.set("86", 9);
+
+        b = b.set("77", 2);
+
+        b = b.set("38", 6);
+        b = b.set("78", 8);
+        b = b.set("98", 7);
+
+        b = b.set("59", 1);
+        b = b.set("89", 5);
+
+        //b = init(b, Constraint.getConstraints());
+        forwardCheck(b, "89", Constraint.getConstraints());
+        System.out.println(solve(b, Constraint.getConstraints()));
+    }
+
+    public static boolean isAssigned(Board b, String name) {
+        if (b.get(name).size() < 2) {
+            return true;
+        } else return false;
+    }
+
+    public static boolean isSolved(Board b) {
+
+        for (String name : b.variables()) {
+            if (!isAssigned(b, name)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static int getAssignment(Board b, String name) {
+        Set<Integer> result = b.get(name);
+        for (int i : result) {
+            return i;
+        }
+        return 0;
+    }
+
+    public static Set<String> getAssigned(Board b) {
+        Set<String> result = new HashSet<>();
+        for (String s : b.variables()) {
+            if (isAssigned(b, s)) {
+                result.add(s);
+            }
+        }
+        return result;
+    }
+
+    public static Set<String> getConnected(String name, Set<Constraint> cs) {
+        Set<String> result = new HashSet<>();
+        for (Constraint c : cs) {
+            if (c.variables().contains(name)) {
+                for (String s : c.variables()) {
+                    if (!s.equals(name)) {
+                        result.add(s);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    public static Board forwardCheck(Board b, String name, Set<Constraint> cs) {
+        if (!isSolved(b)) {
+            int value = getAssignment(b, name);
+            Set<String> connected = getConnected(name, cs);
+            for (String s : connected) {
+                if (b.get(s).size() > 1) {
+                    b.eliminate(s, value);
+                    if (b.get(s).size()==1){
+                        forwardCheck(b,s,cs);
+                    }
+                }//else return forwardCheck(b,s,cs);
+            }
+        }
+        return b;
+    }
+
+    public static Optional<String> findBestVar(Board b) {
+        if (!isSolved(b)) {
+            int counter = 10;
+            Optional<String> var = Optional.empty();
+            for (String variable : b.variables()) {
+                if (b.get(variable).size() < counter) {
+                    counter = b.get(variable).size();
+                    var = Optional.of(variable);
+                }
+            }
+            return var;
+        }
+        return Optional.empty();
+    }
+
+    public static Optional<Board> solve(Board b, Set<Constraint> cs) {
+        return Optional.empty();
+    }
+
+    public static Board init(Board b, Set<Constraint> cs) {
+        return null;
+    }
+
+}

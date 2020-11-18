@@ -1,0 +1,16 @@
+package cbr.attribute.distance;
+
+import cbr.attribute.NumAttribute;
+import cbr.value.Value;
+
+public class NumericAttributeDistance implements AttributeDistance {
+
+  public NumericAttributeDistance(NumAttribute attr) {
+  }
+
+  @Override
+  public double distance(Value v1, Value v2) {
+    return 0;
+  }
+
+}

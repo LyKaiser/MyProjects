@@ -1,0 +1,86 @@
+package rdr;
+
+import weka.core.Instances;
+import weka.core.converters.ConverterUtils.DataSource;
+
+import java.io.InputStream;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        //Node exampleRule = new Node("Eiche").withExcept(new Node("Blätter - Blattrand", "gesägt", "Buche"));
+        Node exampleRule = new Node("Blätter - Blattanordnung", "gegenständig", "Eiche").withElse(new Node("Blätter - Blattform", "herzförmig", "Linde")).withElse(new Node("Blätter - Blattrand", "relativ glattrandig", "Buche"));
+        Map<String, String> facts = new HashMap<>();
+        /*facts.put("Blätter - Blattanordnung", "gegenständig");
+        facts.put("Blätter - Blattform", "rund oder eliptisch");
+        facts.put("Blätter - Blattrand", "gesägt");
+        facts.put("Stamm - Stammoberfläche", "rissig");*/
+        facts.put("Blätter - Blattanordnung", "wechselständig");
+        facts.put("Blätter - Blattform", "rund oder eliptisch");
+        facts.put("Blätter - Blattrand", "relativ glattrandig");
+        facts.put("Stamm - Stammoberfläche", "glatt");
+
+        System.out.println(solve(exampleRule, facts));
+
+        InputStream inputStream = Main.class.getResourceAsStream("baeume.arff");
+        DataSource dataSource = new DataSource(inputStream);
+        Instances instances = dataSource.getDataSet();
+        double accuracy = computeAccuracy(instances);
+        System.out.println(accuracy);
+    }
+
+    public static Optional<String> solve(Node n, Map<String, String> facts) {
+        if (n.condition.isPresent()) {
+            if (facts.containsKey(n.condition.get().attribute) && facts.get(n.condition.get().attribute).equals(n.condition.get().value)) {
+                if (n.exceptNode.isPresent()) {
+                    return solve(n.exceptNode.get(), facts);
+                } else return Optional.of(n.conclusion);
+            } else if (n.elseNode.isPresent()) {
+                return solve(n.elseNode.get(), facts);
+            } else {
+                return Optional.empty();
+            }
+        } else {
+            if (n.exceptNode.isPresent() && n.exceptNode.get().condition.isPresent()) {
+                if (facts.containsKey(n.exceptNode.get().condition.get().attribute)
+                        && facts.get(n.exceptNode.get().condition.get().attribute).equals(n.exceptNode.get().condition.get().value)) {
+                    return solve(n.exceptNode.get(), facts);
+                } else return Optional.of(n.conclusion);
+            } else if (n.elseNode.isPresent()) {
+                return solve(n.elseNode.get(), facts);
+            } else return Optional.of(n.conclusion);
+        }
+    }
+
+    public static Node getRules() {
+        Node result = new Node("Birke")
+                .withExcept(new Node("Blätter - Blattanordnung", "wechselständig", "Birke")
+
+                        .withExcept(new Node("Blätter - Blattform", "herzförmig", "Linde"))
+                        .withElse(new Node(Optional.empty(), "Birke")
+                                .withExcept(new Node("Blätter - Blattform", "dreieckig", "Birke"))
+                                .withElse(new Node("Blätter - Blattform", "rund oder eliptisch", "Buche")
+                                        .withExcept(new Node("Stamm - Stammoberfläche", "glatt", "Buche"))
+                                        .withElse(new Node("Eiche")))
+
+                        )
+                )
+                .withElse(new Node("Blätter - Blattanordnung", "gegenständig", "Birke")
+
+                        .withExcept(new Node("Blätter - Blattform", "dreieckig", "Birke"))
+                        .withElse(new Node("Blätter - Blattform", "rund oder eliptisch", "Esche")
+                                .withExcept(new Node("Stamm - Stammoberfläche", "tiefrissig", "Birke"))
+                                .withElse(new Node(Optional.empty(), "Esche")
+                                        .withExcept(new Node("Stamm - Stammoberfläche", "rissig", "Esche"))
+                                        .withElse(new Node("Stamm - Stammoberfläche", "glatt", "Esche"))
+                                )
+                        )
+                );
+
+        return result;
+    }
+
+    public static double computeAccuracy(Instances instances) {
+        return 0;
+    }
+}

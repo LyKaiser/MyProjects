@@ -1,0 +1,32 @@
+package cbr.instance.distance;
+
+import cbr.attribute.Attribute;
+import cbr.instance.DataInstance;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+public class WeightedDistanceFunction implements InstanceDistance {
+    Map<String, Attribute> attributes;
+    HashMap<String, HashMap<Set<String>, Double>> attrNames2distances;
+    HashMap<String, Double> weights;
+
+    public WeightedDistanceFunction(Map<String, Attribute> attributes,
+                                    HashMap<String, HashMap<Set<String>, Double>> attrNames2distances, HashMap<String, Double> weights) {
+        this.attributes = attributes;
+        this.attrNames2distances = attrNames2distances;
+        this.weights = weights;
+    }
+
+    @Override
+    public double computeDistance(DataInstance dataInstances1, DataInstance dataInstances2) {
+        return 0;
+    }
+
+    @Override
+    public double getWeight(String attrName) {
+        return 0;
+    }
+
+}

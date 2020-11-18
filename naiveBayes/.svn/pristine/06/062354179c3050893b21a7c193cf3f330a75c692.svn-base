@@ -1,0 +1,74 @@
+package naive_bayes.io;
+
+import naive_bayes.DataInstance;
+import naive_bayes.attribute.Attribute;
+import naive_bayes.attribute.ChoiceAttribute;
+import naive_bayes.attribute.NumAttribute;
+import org.apache.commons.collections4.map.HashedMap;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import weka.core.Instances;
+
+import java.util.*;
+
+public class DataLoader {
+
+  private final Map<String, Attribute> attributes;
+
+  private final List<DataInstance> dataInstances;
+
+  public DataLoader(Map<String, Attribute> attributes, List<DataInstance> dataInstances) {
+    this.attributes = attributes;
+    this.dataInstances = dataInstances;
+  }
+
+  public Map<String, Attribute> getAttributes() {
+    return attributes;
+  }
+
+  public List<DataInstance> getDataInstances() {
+    return dataInstances;
+  }
+
+  public static DataLoader loadData(Sheet excelSheet, Instances instances) {
+    Map<String, Attribute> attributes = loadAttributes(excelSheet);
+    List<DataInstance> dataInstances = loadDataInstances(attributes, instances);
+    return new DataLoader(attributes, dataInstances);
+  }
+
+  private static Map<String, Attribute> loadAttributes(Sheet excelSheet) {
+    Map<String, Attribute> result =new HashedMap<>();
+    Row rowOne = excelSheet.getRow(0);
+    Row rowTwo = excelSheet.getRow(1);
+    for (Cell cell : rowOne) {
+      if (cell.getCellType() != CellType.BLANK) {
+        if (cell.getStringCellValue().contains("[")) {
+          NumAttribute numeric = new NumAttribute();
+          result.put(cell.getStringCellValue(),numeric);
+        } else {
+          String name = cell.getStringCellValue();
+          Set<String> attributes = new HashSet<>();
+          cell = rowOne.getCell(cell.getColumnIndex() + 1);
+          while (cell.getCellType() == CellType.BLANK) {
+            attributes.add(rowTwo.getCell(cell.getColumnIndex()).getStringCellValue());
+            cell = rowOne.getCell(cell.getColumnIndex() + 1);
+          }
+          result.put(name,new ChoiceAttribute(attributes));
+        }
+      }else {
+        Set<String> trees = new HashSet<>();
+        for (int i =2; i<=excelSheet.getDefaultColumnWidth(); i++){
+          trees.add(rowOne.getCell(i).getStringCellValue());
+        }
+        result.put("Baumgattung",new ChoiceAttribute(trees));
+      }
+    }
+    return result;
+  }
+
+  private static List<DataInstance> loadDataInstances(Map<String, Attribute> attributes, Instances instances) {
+    return null;
+  }
+}

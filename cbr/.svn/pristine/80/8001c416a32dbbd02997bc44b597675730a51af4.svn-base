@@ -1,0 +1,15 @@
+package cbr.attribute.distance;
+
+import cbr.value.Value;
+
+public class NominalAttributeDistance implements AttributeDistance {
+
+  public NominalAttributeDistance() {
+  }
+
+  @Override
+  public double distance(Value v1, Value v2) {
+    return 0;
+  }
+
+}

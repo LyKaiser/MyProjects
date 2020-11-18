@@ -1,0 +1,72 @@
+package rdr;
+
+import weka.core.Instances;
+import weka.core.converters.ConverterUtils.DataSource;
+
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        Node exampleRule = new Node("Eiche").withExcept(new Node("Blätter - Blattrand", "gesägt", "Buche"));
+
+        Map<String, String> facts = new HashMap<>();
+        facts.put("Blätter - Blattanordnung", "gegenständig");
+        facts.put("Blätter - Blattform", "rund oder eliptisch");
+        facts.put("Blätter - Blattrand", "gesägt");
+        facts.put("Stamm - Stammoberfläche", "rissig");
+
+        System.out.println(solve(exampleRule, facts));
+
+        InputStream inputStream = Main.class.getResourceAsStream("baeume.arff");
+        DataSource dataSource = new DataSource(inputStream);
+        Instances instances = dataSource.getDataSet();
+        double accuracy = computeAccuracy(instances);
+        System.out.println(accuracy);
+    }
+
+    public static Optional<String> solve(Node n, Map<String, String> facts) {
+        Optional<String> result = Optional.empty();
+        /*if (n.elseNode.isEmpty()){
+            result = Optional.of(n.conclusion);
+        }*/
+        for (String s : facts.keySet()) {
+            Optional<Node> exceptNode = n.exceptNode;
+            Optional<Node> elseNode = n.elseNode;
+            if (elseNode.isPresent()) {
+                if (elseNode.get().condition.isPresent()) {
+                    if (elseNode.get().condition.get().attribute.equals(s) && elseNode.get().condition.get().value.equals(facts.get(s))) {
+                        result = Optional.of(elseNode.get().conclusion);
+                    } else solve(elseNode.get(), facts);
+                }
+            }
+            if (exceptNode.isPresent()) {
+                if (exceptNode.get().condition.isPresent()) {
+                    if (exceptNode.get().condition.get().attribute.equals(s) && exceptNode.get().condition.get().value.equals(facts.get(s))) {
+                        result = Optional.of(exceptNode.get().conclusion);
+
+                    } else solve(exceptNode.get(), facts);
+                }
+            }
+
+        }
+
+
+            /*while (n.elseNode.isPresent()) {
+                Optional<Node> elseNode = n.elseNode;
+            }*/
+
+
+        return result;
+    }
+
+    public static Node getRules() {
+        return null;
+    }
+
+    public static double computeAccuracy(Instances instances) {
+        return 0;
+    }
+}

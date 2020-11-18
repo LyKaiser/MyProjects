@@ -1,0 +1,64 @@
+package regEx;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.util.List;
+import java.util.Objects;
+
+public class Main {
+
+  public static void main(String[] args) throws URISyntaxException, IOException {
+    File cityNamesFile = new File(Main.class.getResource("cityNames.txt").toURI().getPath());
+    List<String> possibleCities = Files.readAllLines(cityNamesFile.toPath());
+
+    File apartmentsFolder = new File(Main.class.getResource("apartments").toURI().getPath());
+    for (File aFile : Objects.requireNonNull(apartmentsFolder.listFiles())) {
+      String fileContent = Files.readString(aFile.toPath());
+      System.out.println(extractAllValues(fileContent, possibleCities));
+    }
+  }
+
+  public static String getCityRegEx(List<String> possibleCities) {
+    StringBuilder result = new StringBuilder();
+    for (String city : possibleCities){
+      result.append(city+",");
+
+
+    }
+    return result.toString();
+  }
+
+  public static String getLivingSpaceRegEx() {
+    String result = "(\\d+\\sm2)|(\\d+\\sm\\u00B2)";
+    return result;
+  }
+
+  public static String getNumRoomsRegEx() {
+    String result = "\\d.Z";
+    return result;
+  }
+
+  public static String getPriceRegEx() {
+    String result= "\\.-";
+    return result;
+  }
+
+  public static String getPhoneNumberRegEx() {
+    String result = "\\d*\\/\\d*";
+    return result;
+  }
+
+  public static Double extractDoubleValue(String input, String regEx, int groupNumber) {
+    return null;
+  }
+
+  public static String extractStringValue(String input, String regEx) {
+    return null;
+  }
+
+  public static Apartment extractAllValues(String input, List<String> possibleCities) {
+    return null;
+  }
+}

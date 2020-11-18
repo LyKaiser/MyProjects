@@ -1,0 +1,20 @@
+package diGraph;
+
+public class DiGraphNode {
+
+
+    Object key;
+    List li;
+    public DiGraphNode(Object key){
+        this.key = key;
+        this.li = new List();
+    }
+
+    public List getNeighbors() {
+        return li;
+    }//– gibt die Adjazenzliste des Knotens zurück
+
+    public Object getKey(){
+        return key;
+    } //– gibt das Objekt zurück, auf das der Knoten verweist
+}

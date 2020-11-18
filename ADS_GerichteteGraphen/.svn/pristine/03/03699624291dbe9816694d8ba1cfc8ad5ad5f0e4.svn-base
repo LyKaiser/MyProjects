@@ -1,0 +1,21 @@
+/**
+ * implementation von ListItem (Tutoriumsblatt 3)
+ * @author: andre
+ */
+
+package diGraph;
+
+public class ListItem {
+	public Double key; // gespeicherter wert
+	public ListItem prev; // naechstes element
+	public ListItem next; // vorheriges element
+	
+	// erzeugt ein neues element mit gegebenem wert Double k. 
+	// pointer sind von der List selbst zu setzen!
+	public ListItem(Double k) {
+		this.key  = k;
+		this.prev = null;
+		this.next = null;
+	}
+ 
+}

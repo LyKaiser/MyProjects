@@ -1,0 +1,93 @@
+package rdr;
+
+import weka.core.Instances;
+import weka.core.converters.ConverterUtils.DataSource;
+
+import java.io.InputStream;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        Node exampleRule = new Node("Eiche").withExcept(new Node("Blätter - Blattrand", "gesägt", "Buche"));
+
+        Map<String, String> facts = new HashMap<>();
+        facts.put("Blätter - Blattanordnung", "gegenständig");
+        facts.put("Blätter - Blattform", "rund oder eliptisch");
+        //facts.put("Blätter - Blattrand", "gesägt");
+        facts.put("Stamm - Stammoberfläche", "rissig");
+
+        System.out.println(solve(exampleRule, facts));
+
+        InputStream inputStream = Main.class.getResourceAsStream("baeume.arff");
+        DataSource dataSource = new DataSource(inputStream);
+        Instances instances = dataSource.getDataSet();
+        double accuracy = computeAccuracy(instances);
+        System.out.println(accuracy);
+    }
+
+    public static Optional<String> solve(Node n, Map<String, String> facts) {
+        Optional<String> result = Optional.of(n.conclusion);
+        if (n.elseNode.isPresent()) {
+            n = n.elseNode.get();
+            if (n.condition.isPresent()) {
+                if (facts.containsKey(n.condition.get().attribute)) {
+                    if (facts.get(n.condition.get().attribute).equals(n.condition.get().value)) {
+                        if (n.exceptNode.isPresent()) {
+                            solve(n.exceptNode.get(), facts);
+                        } else return Optional.of(n.conclusion);
+                    } else {
+                        if (n.elseNode.isPresent()) {
+                            solve(n.elseNode.get(), facts);
+                        } else return Optional.of(n.conclusion);
+                    }
+                }
+            } /*else if (n.elseNode.isPresent()) {
+                Optional<String> s = solve(n.elseNode.get(), facts);
+                if (s.equals(Optional.empty())) {
+                    return Optional.of(n.conclusion);
+                } else return s;
+            } else if (n.exceptNode.isPresent()) {
+                Optional<String> s = solve(n.exceptNode.get(), facts);
+                if (s.equals(Optional.empty())) {
+                    return Optional.of(n.conclusion);
+                } else return s;
+            }*/
+        }
+        if (n.exceptNode.isPresent()) {
+            n = n.exceptNode.get();
+            if (n.condition.isPresent()) {
+                if (facts.containsKey(n.condition.get().attribute)) {
+                    if (facts.get(n.condition.get().attribute).equals(n.condition.get().value)) {
+                        if (n.exceptNode.isPresent()) {
+                            solve(n.exceptNode.get(), facts);
+                        } else return Optional.of(n.conclusion);
+                    } else {
+                        if (n.elseNode.isPresent()) {
+                            solve(n.elseNode.get(), facts);
+                        } else return Optional.of(n.conclusion);
+                    }
+                }
+            } /*else if (n.elseNode.isPresent()) {
+                Optional<String> s = solve(n.elseNode.get(), facts);
+                if (s.equals(Optional.empty())) {
+                    return Optional.of(n.conclusion);
+                } else return s;
+            } else if (n.exceptNode.isPresent()) {
+                Optional<String> s = solve(n.exceptNode.get(), facts);
+                if (s.equals(Optional.empty())) {
+                    return Optional.of(n.conclusion);
+                } else return s;
+            }*/
+        }
+
+        return result;
+    }
+
+    public static Node getRules() {
+        return null;
+    }
+
+    public static double computeAccuracy(Instances instances) {
+        return 0;
+    }
+}

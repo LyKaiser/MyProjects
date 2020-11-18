@@ -1,0 +1,31 @@
+package hIndex;
+
+import java.util.Arrays;
+
+
+public class HirschIndex {
+    public static int hirschIndex(int[] citations) {
+        Arrays.sort(citations);
+        int [] neu = new int [citations[citations.length-1]];
+        for (int i = 0; i<citations.length-1; i++ ){
+            int counter = 1;
+            if (citations[i]==citations[i+1]){
+                counter+=1;
+                neu[i]= neu[counter];
+                i++;
+            }
+            else {
+                neu[i]= neu[counter];
+            }
+        }
+
+
+        int result = 0;
+        for (int j = 0; j < neu.length; j++) {
+            int smaller = Math.min(citations[j], citations.length - j);
+            result = Math.max(result, smaller);
+        }
+
+        return result;
+    }
+}

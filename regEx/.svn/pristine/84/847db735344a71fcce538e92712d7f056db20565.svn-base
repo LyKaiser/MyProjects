@@ -1,0 +1,133 @@
+package regEx;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.util.List;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Main {
+
+    public static void main(String[] args) throws URISyntaxException, IOException {
+        File cityNamesFile = new File(Main.class.getResource("cityNames.txt").toURI().getPath());
+        List<String> possibleCities = Files.readAllLines(cityNamesFile.toPath());
+
+        /*File apartmentsFolder = new File(Main.class.getResource("apartments").toURI().getPath());
+        for (File aFile : Objects.requireNonNull(apartmentsFolder.listFiles())) {
+            String fileContent = Files.readString(aFile.toPath());
+            System.out.println(extractAllValues(fileContent, possibleCities));
+            }*/
+
+        String s = "Helle, 900,12 EUR, moderne 2 1/2 Zimmer, ca. 55 m2, mit EBK, Terr. u. Stellplatz, in Rimpar ab 15. 11. an Single, Tel. 0171/7478844";
+        System.out.println(extractStringValue(s, getPriceRegEx()));
+        System.out.println(extractDoubleValue(s, getPriceRegEx(), 1));
+
+    }
+
+    public static String getCityRegEx(List<String> possibleCities) {
+        StringBuilder result = new StringBuilder();
+        for (String city : possibleCities) {
+            result.append(city + "|");
+        }
+        result.deleteCharAt(result.length() - 1);
+        return result.toString();
+    }
+
+    public static String getLivingSpaceRegEx() {
+        String result = "(\\d+\\sm2)|(\\d+\\sm\\u00B2)|(\\d*.qm)";
+        return result;
+    }
+
+    public static String getNumRoomsRegEx() {
+        String result = "(\\d.Z)|(\\d*\\s\\d\\/\\d*)";
+        return result;
+    }
+
+    public static String getPriceRegEx() {
+        //String result = "([^\\w]\\d*\\.-.[^NK|G|g])|(\\d*.EUR)";
+        //String result = "([^\\w]\\d*\\.-.[^NK|G|g])|(\\d*.\\d{3}.E)";
+        String result="((\\d{1}\\.)?\\d{1,3}(,\\d{2})?) EUR";
+        return result;
+    }
+
+    public static String getPhoneNumberRegEx() {
+        //String result = "(\\d{4}.\\d*)";
+        String result ="(\\d{5}.\\d*)|(\\d{4}.\\d*)";
+        return result;
+    }
+
+    public static Double extractDoubleValue(String input, String regEx, int groupNumber) {
+        Pattern p = Pattern.compile(regEx);
+        Matcher m = p.matcher(input);
+        String theGroup;
+        if (m.find()) {
+            theGroup = m.group();
+            if (theGroup.contains("m2")) {
+                String[] arr = theGroup.split("m");
+                theGroup = arr[0];
+            } else if (theGroup.contains("/")) {
+                String[] arr = theGroup.split("/");
+                if (arr[1].length() > 1) {
+                    theGroup = arr[0] + arr[1];
+                } else {
+                    String[] a = arr[0].split(" ");
+                    Double d = Double.parseDouble(a[1]) / Double.parseDouble(arr[1]);
+                    Double d1 = Double.parseDouble(a[0].replaceAll("\\D", ""));
+                    return d1 + d;
+                }
+            }else if (theGroup.contains(",")){
+                String[] spl = theGroup.split(" ");
+                return Double.parseDouble(spl[0].replaceAll(",","."));
+            }
+            Double d = Double.parseDouble(theGroup.replaceAll("\\D", ""));
+            return d;
+        }
+        return null;
+    }
+
+
+
+
+            /*String[] arr = theGroup.split(".");
+            try {
+                int hundreds = Integer.parseInt(arr[2]);
+                String sum = arr[0]+String.valueOf(hundreds);
+                try {
+                    return Double.valueOf(sum);
+                }catch (Exception e){
+                    return null;
+                }
+            }catch (Exception e){
+                try {
+                    Double d = Double.parseDouble(arr[0]);
+                    return d;
+                }catch (Exception e1){
+                    return null;
+                }
+            }
+        }*/
+
+
+    public static String extractStringValue(String input, String regEx) {
+        Pattern p = Pattern.compile(regEx);
+        Matcher m = p.matcher(input);
+        StringBuilder sb = new StringBuilder();
+        while (m.find()) {
+            sb.append(m.group()).append(", ");
+        }
+        if (sb.toString().isEmpty()) {
+            return null;
+        } else {
+            sb.deleteCharAt(sb.length() - 1);
+            sb.deleteCharAt(sb.length() - 1);
+            return sb.toString();
+        }
+    }
+
+    public static Apartment extractAllValues(String input, List<String> possibleCities) {
+        return null;
+    }
+}

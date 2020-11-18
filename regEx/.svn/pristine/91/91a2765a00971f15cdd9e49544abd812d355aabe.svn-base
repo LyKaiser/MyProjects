@@ -1,0 +1,212 @@
+package regEx;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.util.List;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Main {
+
+    public static void main(String[] args) throws URISyntaxException, IOException {
+        File cityNamesFile = new File(Main.class.getResource("cityNames.txt").toURI().getPath());
+        List<String> possibleCities = Files.readAllLines(cityNamesFile.toPath());
+
+        File apartmentsFolder = new File(Main.class.getResource("apartments").toURI().getPath());
+        for (File aFile : Objects.requireNonNull(apartmentsFolder.listFiles())) {
+            String fileContent = Files.readString(aFile.toPath());
+            System.out.println(extractAllValues(fileContent, possibleCities));
+
+        }
+
+        //String s = "900,12 EUR";
+        //System.out.println(extractStringValue(s, getPriceRegEx()));
+        //System.out.println(extractDoubleValue(s, "(\\d+,\\d+)", 1));
+        //System.out.println(extractDoubleValue(s, getNumRoomsRegEx(), 0));
+        //System.out.println(extractDoubleValue(s, getLivingSpaceRegEx(), 0));
+
+
+        //System.out.println(extractStringValue(s, getCityRegEx(possibleCities)));
+        //String s = "'Arnstein - komf. 4-Zi-Whg, 95m2, Parkett, EBK, sep. WC, Energiepass, Balkon, Garage, Keller, ab 01.01.17. Tel. 09353/99284 ab 10.10.2016";
+        //String s = "Helle, 900,12 EUR, moderne 2 1/2 Zimmer, ca. 55 m2, mit EBK, Terr. u. Stellplatz, in Rimpar ab 15. 11. an Single, Tel. 0171/7478844";
+        //String s = "1234,56";
+        /*System.out.println(extractStringValue(s,getCityRegEx(possibleCities)));
+        System.out.println(extractStringValue(s, getLivingSpaceRegEx()));
+        System.out.println(extractDoubleValue(s, getLivingSpaceRegEx(), 2));
+        System.out.println(extractStringValue(s, getPriceRegEx()));
+        System.out.println(extractDoubleValue(s, getPriceRegEx(), 2));
+        System.out.println(extractStringValue(s, getPhoneNumberRegEx()));
+        //System.out.println(extractDoubleValue(s, getPhoneNumberRegEx(), 2));
+        System.out.println(extractStringValue(s, getNumRoomsRegEx()));
+        System.out.println(extractDoubleValue(s, getNumRoomsRegEx(), 2));*/
+    }
+
+
+    public static String getCityRegEx(List<String> possibleCities) {
+        StringBuilder result = new StringBuilder();
+        result.append("(");
+        int counter = 0;
+        for (String city : possibleCities) {
+            if (counter == 0 && (city.equals("Zell") | city.equals("Zellingen"))) {
+                result.append("(Zellingen)|(Zell)");
+                counter++;
+            }
+            result.append(city);
+            result.append("|");
+        }
+        result.deleteCharAt(result.length() - 1);
+        result.append(")");
+        return result.toString();
+    }
+
+    public static String getLivingSpaceRegEx() {
+        String result = "((\\d{1,})\\s?(m2|qm|\\^2]|m\\w))";
+        //String result = "(((\\d+.)?(\\d+)).?(m|q)[^,])";
+        return result;
+    }
+
+    public static String getNumRoomsRegEx() {
+        String result = "(((\\d{1,}\\s\\d+\\/\\d)|(\\d{1,}(,\\d{1,})?))(\\s|-)?(Zi.|Zi|DG-ZW|ZW)((\\s|-)?Whg.)?)";
+        //String result = "((\\d{1,2})(\\s|-)?(Zi.|Zi|DG-ZW|ZW)((\\s|-)?Whg.)?)";
+        //String result = "(((\\d?.?\\d+)(.?\\d+.\\d+)?).?(Zi|ZW|D))";
+        return result;
+    }
+
+    public static String getPriceRegEx() {
+        String result = "((warm|kalt|WM|(WM\\s(bis)\\s)|\\.|,|KM|für|ab)(\\s?)((\\d{1,}\\.)?\\d{1,})(EUR\\/m|,-|\\.-|\\s)?\\s?(;|EUR|\\+|WM|KM|EUR|inkl|\\d))";
+        //String result = "((\\d?\\.?\\d+[^\\/]?\\d?[^-])(.?EUR|(\\.|,)-.[^N|ZW|G|S]))";
+        return result;
+    }
+
+    public static String getPhoneNumberRegEx() {
+        String result = "(((T\\.|Tel\\.|\\.|n|oder)\\s?)((\\d{3,})(\\/|-|\\s)?(\\d{3,})))";
+        return result;
+    }
+
+    public static Double extractDoubleValue(String input, String regEx, int groupNumber) {
+        if (input.isEmpty() || regEx.isEmpty() || groupNumber == 0) {
+            return null;
+        }
+
+        Pattern p = Pattern.compile(regEx);
+        Matcher m = p.matcher(input);
+
+        if (m.find()) {
+            //String regExString = null;
+            if (regEx.equals(getLivingSpaceRegEx())) {
+                return Double.parseDouble(m.group(groupNumber));
+            } else if (regEx.equals(getNumRoomsRegEx())) {
+                if (m.group(groupNumber).contains("/")) {
+                    String regExString = m.group(groupNumber);
+                    String[] list = regExString.split(" ");
+                    String[] bruch = list[1].split("/");
+                    double br = Double.parseDouble(bruch[0]) / Double.parseDouble(bruch[1]);
+                    return Double.parseDouble(list[0]) + br;
+                } else if (m.group(groupNumber).contains(",")) {
+                    String s = m.group(groupNumber);
+                    s = s.replaceAll(",", ".");
+                    return Double.parseDouble(s);
+                } else return Double.parseDouble(m.group(groupNumber));
+            } else if (regEx.equals(getPriceRegEx())) {
+                if (m.group(groupNumber).contains(".")){
+                    String num = m.group(groupNumber).replaceAll(".","");
+                    return Double.parseDouble(num);
+                }else return Double.parseDouble(m.group(groupNumber));
+            } else {
+                String regExString = m.group(groupNumber);
+                regExString = regExString.replaceAll("\\.", "");
+                regExString = regExString.replaceAll(",", "\\.");
+                return Double.parseDouble(regExString);
+            }
+        } else return null;
+
+        /*String theGroup;
+        if (m.find()) {
+            if (groupNumber <= m.groupCount()) {
+                theGroup = m.group(groupNumber);
+
+                if (theGroup.contains("/")) {
+                    String[] arr = theGroup.split("/");
+                    String[] a = arr[0].split(" ");
+                    double d = Double.parseDouble(a[2]) / Double.parseDouble(arr[1]);
+                    return (Double.parseDouble(a[1])) + d;
+                }
+                if (theGroup.contains(" ")) {
+                    theGroup = theGroup.replaceAll(" ", "");
+                }
+                if (theGroup.contains(",")) {
+                    theGroup = theGroup.replaceAll(",", ".");
+                    return Double.parseDouble(theGroup);
+                }
+                if (theGroup.contains(".")) {
+                    theGroup = theGroup.replace(".", "");
+                }
+                if (theGroup.matches("[0-9]+")) {
+                    return Double.parseDouble(theGroup);
+                }
+            } else return null;
+        }*/
+    }
+
+    public static String extractStringValue(String input, String regEx) {
+        Pattern p = Pattern.compile(regEx);
+        Matcher m = p.matcher(input);
+        StringBuilder sb = new StringBuilder();
+
+        while (m.find()) {
+            if (regEx.equals(getPhoneNumberRegEx())) {
+                sb.append(m.group(4));
+            } else {
+                sb.append(m.group());
+            }
+            sb.append(", ");
+        }
+        if (sb.length() == 0) {
+            return null;
+        } else {
+            sb = sb.deleteCharAt(sb.length() - 1);
+            sb = sb.deleteCharAt(sb.length() - 1);
+            return sb.toString();
+        }
+        /*StringBuilder sb = new StringBuilder();
+        if (regEx.equals(getPhoneNumberRegEx())) {
+            while (m.find()) {
+                String s = m.group(3);
+                if (s.startsWith(" ") | s.startsWith(".")) {
+                    s = s.replaceAll(" ", "");
+                }
+                sb.append(s).append(", ");
+            }
+        } else {
+            while (m.find()) {
+                String s = m.group().replaceAll("[:|,|\\u002D|/|)]", "");
+                if (s.contains(" ")) {
+                    String[] arr = s.split(" ");
+                    if (arr.length < 2) {
+                        sb.append(arr[0]).append(", ");
+                    } else sb.append(s).append(", ");
+                } else sb.append(s).append(", ");
+            }
+        }
+        if (sb.toString().isEmpty()) {
+            return null;
+        } else {
+            sb.deleteCharAt(sb.length() - 1);
+            sb.deleteCharAt(sb.length() - 1);
+            return sb.toString();
+        }*/
+    }
+
+    public static Apartment extractAllValues(String input, List<String> possibleCities) {
+        String city = extractStringValue(input, getCityRegEx(possibleCities));
+        Double space = extractDoubleValue(input, getLivingSpaceRegEx(), 2);
+        Double rooms = extractDoubleValue(input, getNumRoomsRegEx(), 2);
+        Double price = extractDoubleValue(input, getPriceRegEx(), 6);
+        String phone = extractStringValue(input, getPhoneNumberRegEx());
+
+        return new Apartment(city, space, rooms, price, phone);
+    }
+}
