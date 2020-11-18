@@ -1,0 +1,68 @@
+package de.jpp.algorithm;
+
+import de.jpp.algorithm.interfaces.EstimationFunction;
+import de.jpp.factory.SearchStopFactory;
+import de.jpp.io.interfaces.ParseException;
+import de.jpp.model.TwoDimGraph;
+import de.jpp.model.XYNode;
+
+import java.io.IOException;
+import java.util.Optional;
+
+public class Main {
+    public static void main(String[] args) throws ParseException, IOException {
+        TwoDimGraph two = new TwoDimGraph();
+        XYNode n1= new XYNode("n1",0,0);
+        XYNode n2=new XYNode("n2",2,0);
+        XYNode n3=new XYNode("n3",4,0);
+        XYNode n4=new XYNode("n4",5,0);
+        XYNode n5=new XYNode("n5",1,1);
+        XYNode n6=new XYNode("n6",3,1);
+        two.addNode(n1);
+        two.addNode(n2);
+        two.addNode(n3);
+        two.addNode(n4);
+        two.addNode(n5);
+        two.addNode(n6);
+
+        two.addEdge(n1,n2, Optional.of(3.0));
+        //two.addEdge(n2,n1, Optional.of(3.0));
+
+        two.addEdge(n2,n3, Optional.of(2.0));
+        //two.addEdge(n3,n2, Optional.of(2.0));
+
+        two.addEdge(n3,n4, Optional.of(2.0));
+        //two.addEdge(n4,n3, Optional.of(2.0));
+
+        two.addEdge(n1,n5, Optional.of(1.0));
+        //two.addEdge(n5,n1, Optional.of(1.0));
+
+        two.addEdge(n5,n2, Optional.of(1.0));
+        //two.addEdge(n2,n5, Optional.of(1.0));
+
+        two.addEdge(n2,n6, Optional.of(1.0));
+        //two.addEdge(n6,n2, Optional.of(1.0));
+
+        two.addEdge(n6,n3, Optional.of(3.0));
+        //two.addEdge(n3,n6, Optional.of(3.0));
+        EstimationFunction<XYNode> ui= new ATest();
+        //AStarSearch<XYNode, Double, TwoDimGraph> star = new AStarSearch<>(two,n1,n7,ui);
+        DijkstraSearch dij= new DijkstraSearch(two,n1);
+        dij.findAllPaths();
+        System.out.println(dij.getSearchResult().getPredecessor(n6));
+        //star.findPaths(new SearchStopFactory().startToDest(n7));
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+}

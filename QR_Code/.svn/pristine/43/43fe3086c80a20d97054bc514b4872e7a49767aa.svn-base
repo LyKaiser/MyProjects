@@ -1,0 +1,169 @@
+package jpp.qrcode;
+
+public class DataPositions {
+
+    private ReservedModulesMask mask;
+    private int i;
+    private int j;
+    boolean[][] betreten;
+
+    public DataPositions(ReservedModulesMask mask) {
+        this.mask = mask;
+        int size = mask.size();
+        i = size - 1;
+        j = size - 1;
+        betreten = new boolean[size][size];
+        betreten[i][j] = true;
+    }
+
+    public int i() {
+        if (i == mask.size() - 1 && j == 9) {
+            return i = mask.size() - 9;
+        }
+        if (i == 9 && j == 7) {
+            return i;
+        }
+
+        if (j > 6) {
+            if (j % 2 == 0) {
+                return i;
+            } else if ((j + 1) % 4 == 0) {
+                if (i == 9 && j > mask.size() - 9) {
+                    return i;
+                }
+                if (i == 7) {
+                    return i -= 2;
+                }
+
+                return i -= 1;
+            } else {
+                if (i == mask.size() - 1 && j > 9) {
+                    return i;
+                }
+                if (i == 5) {
+                    return i += 2;
+                }
+                return i += 1;
+            }
+        } else {
+            if ((j + 1) % 2 == 0) {
+                return i;
+            } else if (j == 4 || j == 0) {
+                if (i == mask.size() - 9) {
+                    return i;
+                }
+                return i -= 1;
+            } else {
+                if (i == 9) {
+                    return i;
+                }
+                return i += 1;
+            }
+        }
+
+    }
+
+    public int j() {
+
+        if (i == mask.size() - 1 && j == 9) {
+            return j = 8;
+        }
+        if (i == 9 && j == 7) {
+            return j += 2;
+        }
+        if (j > 6) {
+            if (j % 2 == 0) {
+                return j -= 1;
+            } else {
+                if (i == 9 && j > mask.size() - 9) {
+                    return j -= 1;
+                }
+                if (i == mask.size() - 1 && j > 9) {
+                    j -= 1;
+                }
+                return j += 1;
+            }
+        } else {
+            if ((j + 1) % 2 == 0) {
+                return j -= 1;
+            } else if (j == 4 || j == 0) {
+                if (i == mask.size() - 9) {
+                    return j -= 1;
+                }
+                return i += 1;
+            } else {
+                if (i == 9) {
+                    return j -= 1;
+                }
+                return i += 1;
+            }
+        }
+
+    }
+
+    public boolean next() {
+        if (!betreten[i][j]) {
+            return false;
+        }
+
+        int iNext = i();
+        int jNext = j();
+
+        while (mask.isReserved(iNext, jNext)) {
+            i = iNext;
+            j = jNext;
+            iNext = i();
+            jNext = j();
+        }
+
+        i = iNext;
+        j = jNext;
+        betreten[i][j] = true;
+        int iEnde = i();
+        int jEnde = j();
+
+        if (jEnde == 0 && mask.isReserved(iEnde, jEnde)) {
+            return false;
+        } else {
+            if (jNext == 0 && iNext == mask.size() - 9) {
+                return false;
+            }
+            return true;
+        }
+    }
+
+
+}
+
+
+
+
+
+        /*if(i >)
+
+            if(matrix[i][j])
+
+    {
+        int iNext = i();
+        int jNext = j();
+
+        if (iNext == 6 || jNext == 6) {
+            iNext = i();
+            jNext = j();
+        }
+        while (mask.isReserved(iNext, jNext)) {
+            iNext = i();
+            jNext = j();
+        }
+        i = iNext;
+        j = jNext;
+    }
+        if(j >-1)
+
+    {
+        matrix[i][j] = true;
+        return true;
+    } else return false;
+}
+}*/
+

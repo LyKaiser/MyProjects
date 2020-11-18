@@ -1,0 +1,119 @@
+package de.jpp.algorithm;
+
+import de.jpp.algorithm.interfaces.*;
+import de.jpp.model.interfaces.Edge;
+import de.jpp.model.interfaces.Graph;
+
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
+
+public abstract class BreadthFirstSearchTemplate<N, A, G extends Graph<N, A>> implements SearchAlgorithm<N, A, G> {
+    private boolean stopped;
+    private G graph;
+    private N start;
+    private SearchResultImpl<N, A> result;
+    LinkedList<N> link = new LinkedList<>();
+
+    public BreadthFirstSearchTemplate(G graph, N start) {
+        this.graph = graph;
+        this.start = start;
+    }
+
+    @Override
+    public SearchResult<N, A> findPaths(SearchStopStrategy<N> type) {
+
+        Collection<N> nodes = graph.getNodes();
+        Collection<Edge<N, A>> edges = graph.getEdges();
+        for (N node : nodes) {
+            result.statusMap.put(node, NodeStatus.UNKOWN);
+        }
+
+        result.setOpen(start);
+        link.add(start);
+        while (!link.isEmpty()) {
+            N n = link.getFirst();
+            for (Edge<N, A> edge : graph.getNeighbours(n)) {
+                relax(edge,type);
+            }
+        }
+        return result;
+    }
+
+    public void relax(Edge<N, A> edge, SearchStopStrategy<N> type) {
+        N start=edge.getStart();
+        N dest = edge.getDestination();
+        double sta;
+        double des;
+    }
+
+    public void rekBFS(N node, SearchStopStrategy<N> type) {
+
+        link.removeFirst();
+        Collection<Edge<N, A>> neighbours = graph.getNeighbours(node);
+        if (!stopped) {
+            double d = Double.MIN_VALUE;
+            for (Edge<N, A> e : neighbours) {
+                double anno;
+                if (e.getAnnotation().isPresent()) {
+                    anno = (double) e.getAnnotation().get();
+                } else anno = 1;
+
+                if (anno > d) {
+                    link.addFirst(e.getDestination());
+                } else link.addLast(e.getDestination());
+
+                result.setOpen(link.getFirst());
+                rekBFS(link.getFirst(), type);
+
+
+                if (result.getNodeStatus(e.getDestination()).equals(NodeStatus.UNKOWN)) {
+                    NodeInformation<N, A> info;
+                    if (e.getAnnotation().isPresent()) {
+                        info = new NodeInformation<>(e, (double) e.getAnnotation().get());
+                    } else info = new NodeInformation<>(e, 1);
+                    result.infoMap.put(e.getDestination(), info);
+                    result.setClosed(e.getDestination());
+                    if (type.stopSearch(e.getDestination())) {
+                        stop();
+                    }
+                    rekBFS(e.getDestination(), type);
+                }
+            }
+        }
+
+    }
+
+    @Override
+    public SearchResult<N, A> findAllPaths() {
+        return result;
+    }
+
+    @Override
+    public ObservableSearchResult<N, A> getSearchResult() {
+        return result;
+    }
+
+    @Override
+    public N getStart() {
+        return start;
+    }
+
+    @Override
+    public G getGraph() {
+        return graph;
+    }
+
+    @Override
+    public void stop() {
+        if (stopped) {
+
+        }
+
+    }
+
+    public abstract NodeInformation<N, A> getNodeInformation(Edge<N, A> edge, A anno);
+
+    public abstract void openIfShorter(N node, NodeInformation<N, A> info);
+}

@@ -1,0 +1,128 @@
+package jpp.qrcode.encode;
+
+import jpp.qrcode.*;
+
+public class MaskSelector {
+
+    public static void placeFormatInformation(boolean[][] res, int formatInformation) {
+        FormatInformation form = FormatInformation.fromBits(formatInformation);
+        form.toString();
+        ErrorCorrection error = form.errorCorrection();
+        MaskPattern mask = form.maskPattern();
+        MaskFunction fkt = mask.maskFunction();
+
+
+        throw new IllegalStateException();
+    }
+
+    public static int calculatePenaltySameColored(boolean[][] data) {
+        int punkte = 0;
+        int counter = 0;
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data.length; j++) {
+                while (data[i][j] == data[i][j + 1]) {
+                    counter++;
+                    j++;
+                }
+                if (counter >= 4) {
+                    if (counter - 4 == 0) {
+                        punkte += 3;
+                    } else {
+                        punkte += 3;
+                        for (i = counter - 4; i > 0; i--) {
+                            punkte++;
+                        }
+                    }
+                }
+                if (j==data.length-1){
+                    break;
+                }
+            }
+        }for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data.length; j++) {
+                while (data[j][i] == data[j+1][i]) {
+                    counter++;
+                    j++;
+                }
+                if (counter >= 4) {
+                    if (counter - 4 == 0) {
+                        punkte += 3;
+                    } else {
+                        punkte += 3;
+                        for (i = counter - 4; i > 0; i--) {
+                            punkte++;
+                        }
+                    }
+                }
+                if (j==data.length-1){
+                    break;
+                }
+            }
+        }
+        return punkte;
+    }
+
+
+
+
+                /*if (j != data.length - 1) {
+                    if (data[i][j] == data[i][j + 1]) {
+                        counter++;
+                    }else breaker++;
+                }
+            }
+        }
+
+
+        int j = 0;
+        while (j < data.length) {
+            int counter = 0;
+            if (j == data.length - 1) {
+                break;
+            }
+            while (data[i][j] == data[i][j + 1]) {
+                counter++;
+                j++;
+                if (j == data.length - 1) {
+                    break;
+                }
+            }
+            j++;
+            counter += 1;
+            if (counter > 4) {
+                if (counter - 5 == 0) {
+                    punkte += 3;
+                } else {
+                    punkte += 3;
+                    for (i = counter - 5; i > 0; i--) {
+                        punkte++;
+                    }
+                }
+
+            }
+        }
+
+
+        return punkte;
+    }*/
+
+    public static int calculatePenalty2x2(boolean[][] arr) {
+        throw new IllegalStateException();
+    }
+
+    public static int calculatePenaltyBlackWhite(boolean[][] arr) {
+        throw new IllegalStateException();
+    }
+
+    public static int calculatePenaltyPattern(boolean[][] array) {
+        throw new IllegalStateException();
+    }
+
+    public static int calculatePenaltyFor(boolean[][] data) {
+        throw new IllegalStateException();
+    }
+
+    public static MaskPattern maskWithBestMask(boolean[][] data, ErrorCorrection correction, ReservedModulesMask modulesMask) {
+        throw new IllegalStateException();
+    }
+}

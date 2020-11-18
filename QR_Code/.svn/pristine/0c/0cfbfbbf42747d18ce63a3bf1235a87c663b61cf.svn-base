@@ -1,0 +1,24 @@
+package jpp.qrcode.io;
+
+import java.io.IOException;
+import java.io.OutputStream;
+
+public class TextWriter {
+
+    public static void write(OutputStream stream, boolean[][] data) throws IOException {
+
+
+        byte[] alle = new byte[data.length * data.length];
+
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data[i].length; j++) {
+                for (int a = 0; a < alle.length; a++) {
+                    if (data[i][j]) {
+                        alle[a] = 1;
+                    } else alle[a] = 0;
+                }
+            }
+        }
+        stream.write(alle);
+    }
+}

@@ -1,0 +1,63 @@
+package jpp.gametheory.generic;
+
+import java.util.*;
+
+public class Player<C extends IChoice> implements IPlayer<C> {
+
+    private String name;
+    private IStrategy<C> strategy;
+
+    public Player(String name, IStrategy<C> strategy) throws NullPointerException{
+        if (name==null || strategy==null){
+            throw new NullPointerException();
+        }
+        this.strategy = strategy;
+        this.name = name;
+
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public IStrategy<C> getStrategy() {
+        return strategy;
+    }
+
+    @Override
+    public C getChoice(List<IGameRound<C>> previousRounds) throws NullPointerException {
+        if (previousRounds==null){
+            throw new NullPointException();
+        }
+        return strategy.getChoice(this, previousRounds);
+    }
+
+    @Override
+    public int compareTo(IPlayer<C> o) {
+        List<String> namelist = new ArrayList<>();
+        namelist.add(o.getName());
+        namelist.add(this.getName());
+        Collections.sort(namelist);
+        return namelist.indexOf(o.getName());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Player<?> player = (Player<?>) o;
+        return Objects.equals(name, player.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+
+    @Override
+    public String toString() {
+        return "" + name + "(" + strategy + ")";
+    }
+}

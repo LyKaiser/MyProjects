@@ -1,0 +1,254 @@
+package jpp.qrcode;
+
+public class QRCode {
+
+    private final boolean[][] validatedQrCode;
+    private final Version version;
+    private final MaskPattern pattern;
+    private final ErrorCorrection correction;
+
+    public QRCode(boolean[][] validatedQrCode, Version version, MaskPattern pattern, ErrorCorrection correction) {
+        this.validatedQrCode = validatedQrCode;
+        this.version = version;
+        this.pattern = pattern;
+        this.correction = correction;
+    }
+
+    public Version version() {
+        return version;
+    }
+
+    public boolean[][] data() {
+        return validatedQrCode;
+    }
+
+    public MaskPattern maskPattern() {
+        return pattern;
+    }
+
+    public ErrorCorrection errorCorrection() {
+        return correction;
+    }
+
+    public String matrixToString() {
+        StringBuilder s = new StringBuilder();
+        for (int i=0; i<validatedQrCode.length;i++){
+            for (int j=0; j<validatedQrCode[0].length;j++){
+
+                if (validatedQrCode[i][j]){
+                    s.append((char) 0x2588).append((char) 0x2588);
+                }
+                else s.append((char)0x2591).append((char) 0x2591);
+            }s.append('\n');
+        }
+        /*for (boolean[] spalte : validatedQrCode) {
+            s.append('\n');
+            for (boolean b : spalte) {
+                if (b) {
+                    c = 0x2588;
+                    s.append(c);
+                } else c = 0x2591;
+                s.append(c);
+            }
+
+        }*/
+        s.deleteCharAt(s.length()-1);
+        return s.toString();
+    }
+
+    public static QRCode createValidatedFromBooleans(boolean[][] matrix) throws InvalidQRCodeException {
+        if (matrix == null) {
+            throw new InvalidQRCodeException();
+        }
+        if (matrix.length == 0) {
+            throw new InvalidQRCodeException();
+        }
+        if (matrix[0].length == 0) {
+            throw new InvalidQRCodeException();
+        }
+        int x = matrix.length;
+        int y = matrix[0].length;
+        int vers = x - 17;
+
+        if (x != y) {
+            throw new InvalidQRCodeException();
+        }
+        if (vers % 4 != 0) {
+            throw new InvalidQRCodeException();
+        }
+
+        int size = matrix.length;
+
+        //OrientationPattern linksOben Rahmen
+        for (int a = 0; a < 7; a++) {
+            if (!matrix[a][0] || !matrix[a][6] || !matrix[0][a] || !matrix[6][a]) {
+                throw new InvalidQRCodeException();
+            }
+        }
+
+        //linksOben inneres
+        for (int a = 1; a < 6; a++) {
+            if (matrix[a][1] || matrix[a][5] || matrix[1][a] || matrix[5][a]) {
+                throw new InvalidQRCodeException();
+            }
+        }
+
+        //linksOben innerinner
+        for (int a = 2; a < 5; a++) {
+            for (int b = 2; b < 5; b++) {
+                if (!matrix[a][b]) {
+                    throw new InvalidQRCodeException();
+
+                }
+            }
+        }
+        //Seperator linksOben
+        for (int a = 0; a < 8; a++) {
+            if (matrix[7][a] || matrix[a][7]) {
+                throw new InvalidQRCodeException();
+            }
+        }
+
+        //OrientationPattern linksUnten Rahmen
+        for (int a = 0; a < 7; a++) {
+            if (matrix[size - 7][a] || matrix[matrix.length - 1][a]) {
+                throw new InvalidQRCodeException();
+            }
+        }
+        for (int a = size - 7; a < matrix.length; a++) {
+            if (!matrix[a][0] || !matrix[a][6]) {
+                throw new InvalidQRCodeException();
+            }
+        }
+
+        //linksUnten inneres
+        for (int a = 1; a < 6; a++) {
+            if (matrix[size - 6][a] || matrix[matrix.length - 2][a]) {
+                throw new InvalidQRCodeException();
+            }
+        }
+        for (int a = size - 6; a < matrix.length - 1; a++) {
+            if (matrix[a][1] || matrix[a][5]) {
+                throw new InvalidQRCodeException();
+            }
+        }
+
+        //linksUnten innerinner
+        for (int a = size - 5; a < size - 2; a++) {
+            for (int b = size - 5; b < size - 2; b++) {
+                if (!matrix[a][b]) {
+                    throw new InvalidQRCodeException();
+
+                }
+            }
+        }
+        //Seperator linksUnten
+        for (int a = size - 8; a < matrix.length; a++) {
+            if (matrix[a][7]) {
+                throw new InvalidQRCodeException();
+            }
+        }
+        for (int a = 0; a < 8; a++) {
+            if (matrix[size - 8][a]) {
+                throw new InvalidQRCodeException();
+            }
+        }
+
+        //OrientationPattern rechtsOben Rahmen
+        for (int a = 0; a < 7; a++) {
+            if (!matrix[a][size - 7] || !matrix[a][matrix.length - 1]) {
+                throw new InvalidQRCodeException();
+            }
+        }
+        for (int a = size - 7; a < matrix.length; a++) {
+            if (!matrix[0][a] || !matrix[6][a]) {
+                throw new InvalidQRCodeException();
+            }
+        }
+
+        //rechtsOben inneres
+        for (int a = 1; a < 6; a++) {
+            if (matrix[a][size - 6] || matrix[a][matrix.length - 2]) {
+                throw new InvalidQRCodeException();
+            }
+        }
+        for (int a = size - 6; a < matrix.length - 1; a++) {
+            if (matrix[1][a] || matrix[5][a]) {
+                throw new InvalidQRCodeException();
+            }
+        }
+
+        //rechtsOben innerinner
+        for (int a = size - 5; a < size - 2; a++) {
+            for (int b = size - 5; b < size - 2; b++) {
+                if (!matrix[a][b]) {
+                    throw new InvalidQRCodeException();
+
+                }
+            }
+        }
+        //Seperator rechtsOben
+        for (int a = size - 8; a < matrix.length; a++) {
+            if (matrix[size - 8][a] || matrix[a][7]) {
+                throw new InvalidQRCodeException();
+            }
+        }
+        for (int a = 0; a < 7; a++) {
+            if (matrix[a][size - 8]) {
+                throw new InvalidQRCodeException();
+            }
+        }
+
+        //TimingPattern
+        for (int a = 9; a < size - 8; a += 2) {
+            if (matrix[a][6] || matrix[6][a]) {
+                throw new InvalidQRCodeException();
+            }
+        }
+        for (int a = 10; a < size - 8; a += 2) {
+            if (matrix[a][6] || matrix[6][a]) {
+                throw new InvalidQRCodeException();
+            }
+        }
+
+        //AlignmentPatterns
+        int versio = matrix.length - 17 / 4;
+        Version v = Version.fromNumber(versio);
+        int[] align = v.alignmentPositions();
+        for (int i = 0; i<align.length;i++){
+            for (int j = 0; j<align.length;j++){
+                if (!matrix[align[i]][align[j]]){
+                    for (int a = align[i]-2; a< align[i]+3;a++){
+                        for (int b = align[j]-2; b < align[j]+3;b++){
+                            matrix[a][b] = true;
+                        }
+                    }
+
+                }
+            }
+        }
+
+
+        for (int i = 0; i < align.length; i++) {
+            for (int a = align[i] - 2; a < align[i] + 3; a++) {
+                for (int b = align[i] - 2; b < align[i] + 3; b++) {
+                    if (!(matrix[a][b] = true)) {
+                        throw new InvalidQRCodeException();
+                    }
+                }
+            }
+        }
+
+        int versioInfo = VersionInformation.forVersion(v);
+        Version versioGes = VersionInformation.fromBits(versioInfo);
+        int versioNr = versioGes.number();
+        if (versio > 6) {
+            if (versioGes == null || versio != versioNr) {
+                throw new InvalidQRCodeException();
+            }
+        }
+
+
+        return null;
+    }
+}

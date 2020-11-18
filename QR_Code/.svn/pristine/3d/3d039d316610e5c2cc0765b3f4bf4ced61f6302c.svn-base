@@ -1,0 +1,53 @@
+package jpp.qrcode;
+
+public class DataPositions {
+
+    private ReservedModulesMask mask;
+    private boolean[][] matrix;
+    private int i;
+    private int j;
+
+    public DataPositions(ReservedModulesMask mask) {
+        this.mask = mask;
+        int size = mask.size();
+        matrix = new boolean[size][size];
+        i = size - 1;
+        j = size - 1;
+        matrix[i][j] = true;
+    }
+
+    public int i() {
+        if (i != matrix.length - 1 && i != 0) {
+            if (i % 2 == 0) {
+                i += 1;
+            } else i -= 1;
+        }
+        return i;
+    }
+
+    public int j() {
+        if (i == matrix.length - 1 || i == 0) {
+            j = j - 1;
+        }
+        return j;
+    }
+
+    public boolean next() {
+
+        int iNeu = i;
+        int jNeu = j;
+
+        while (mask.isReserved(i,j)){
+            i = i();
+            j = j();
+        }
+        if (matrix[iNeu][jNeu]) {
+            i = i();
+            j = j();
+        }
+        if (j > -1) {
+            return true;
+        } else return false;
+    }
+
+}

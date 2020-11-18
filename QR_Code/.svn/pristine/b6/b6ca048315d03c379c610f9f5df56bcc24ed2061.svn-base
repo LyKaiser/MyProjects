@@ -1,0 +1,81 @@
+package jpp.qrcode.io;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class TextReader {
+
+    public static boolean[][] read(InputStream in) throws IOException {
+        if (in == null) {
+            throw new IOException();
+        }
+
+        InputStreamReader isr = new InputStreamReader(in);
+        BufferedReader bu = new BufferedReader(isr);
+        String zeile;
+        List<String> li = new ArrayList<>();
+
+        while ((zeile = bu.readLine()) != null) {
+            if (zeile.startsWith("1") || zeile.startsWith("0")) {
+                li.add(zeile);
+            } else if (zeile.startsWith("#")) {
+                break;
+            } else {
+                throw new IOException();
+            }
+        }
+        int l = li.get(0).length();
+        boolean[][] qrCode = new boolean[l][l];
+        for (String str : li) {
+            for (int i = 0; i < str.length(); i++) {
+                for (int a = 0; a < qrCode.length; a++) {
+                    for (int b = 0; b < qrCode[i].length; b++) {
+                        if (str.charAt(i) == 1) {
+                            qrCode[a][b] = true;
+                        } else qrCode[a][b] = false;
+                    }
+                }
+            }
+
+        }
+        return qrCode;
+    }
+}
+
+
+        /*String s = sb.toString();
+
+
+        byte[] alle = in.readAllBytes();
+
+        int counter = 0;
+        for (byte b : alle) {
+            if (b == 1 || b == 0) {
+                counter += 1;
+            }
+        }
+        boolean[] sortiert = new boolean[counter];
+
+        int j = 0;
+        for (int i = 0; i < sortiert.length; i++) {
+            if (alle[i] == 1) {
+                sortiert[j] = true;
+                j += 1;
+            } else if (alle[j] == 0) {
+                sortiert[j] = false;
+                j += 1;
+            }
+        }
+        boolean[][] qrCode = new boolean[(int) Math.pow(counter, 2)][(int) Math.pow(counter, 2)];
+        int c = 0;
+        for (int a = 0; a < qrCode.length; a++) {
+            for (int b = 0; b < qrCode[0].length; b++) {
+                qrCode[a][b] = sortiert[c];
+                c += 1;
+            }
+        }
+        return qrCode;
+
+    }
+}*/

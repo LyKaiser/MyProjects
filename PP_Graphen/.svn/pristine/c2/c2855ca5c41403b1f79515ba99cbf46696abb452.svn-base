@@ -1,0 +1,117 @@
+package de.jpp.algorithm;
+
+import de.jpp.algorithm.interfaces.*;
+import de.jpp.factory.SearchStopFactory;
+import de.jpp.model.interfaces.Edge;
+import de.jpp.model.interfaces.WeightedGraph;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+
+
+public class AStarSearch<N, A, G extends WeightedGraph<N, A>> implements EstimationFunction<N> {
+
+    private G graph;
+    private N start;
+    private N dest;
+    private EstimationFunction<N> estimationFunction;
+    private boolean stopped=false;
+    private SearchResultImpl<N, A> result = new SearchResultImpl<>();
+    private LinkedList<N> que = new LinkedList<>();
+    Map<N, Double> map = new HashMap<>();
+
+    public AStarSearch(G graph, N start, N dest, EstimationFunction<N> estimationFunction) {
+        this.graph = graph;
+        this.start = start;
+        this.dest = dest;
+        this.estimationFunction = estimationFunction;
+    }
+
+    public SearchResult<N, A> findPaths(SearchStopStrategy<N> type) {
+        Collection<N> nodes = graph.getNodes();
+        for (N node : nodes) {
+            result.statusMap.put(node, NodeStatus.UNKOWN);
+            if (node != start) {
+                map.put(node, Double.MAX_VALUE);
+            }
+            map.put(start, 0.0);
+        }
+
+        result.setOpen(start);
+        que.add(start);
+        while (!result.getAllKnownNodes().isEmpty()){
+
+        }
+
+
+
+
+        if (!stopped) {
+            while (!que.isEmpty()) {
+                N n = que.getFirst();
+                que.remove(n);
+                for (Edge<N, A> edge : graph.getNeighbours(n)) {
+                    if (result.getNodeStatus(edge.getDestination()).equals(NodeStatus.UNKOWN)) {
+                        result.setOpen(edge.getDestination());
+                        que.add(edge.getDestination());
+                        double anno=getEstimatedDistance(edge.getStart(), edge.getDestination());
+                        map.put(edge.getDestination(), anno);
+                        NodeInformation<N, A> info = new NodeInformation<>(edge, anno);
+                        result.infoMap.put(edge.getDestination(),info);
+                        /*if (edge.getAnnotation().isPresent()) {
+                            double anno = (double) edge.getAnnotation().get();
+                            map.put(edge.getDestination(), anno);
+                            NodeInformation<N, A> info = new NodeInformation<>(edge, anno);
+                            result.infoMap.put(edge.getDestination(),info);
+                        } else stop();*/
+                    }
+                    else if (result.getNodeStatus(edge.getDestination()).equals(NodeStatus.OPEN)||result.getNodeStatus(edge.getDestination()).equals(NodeStatus.CLOSED)) {
+                        if (edge.getAnnotation().isPresent()) {
+                            double anno=getEstimatedDistance(edge.getStart(),edge.getDestination());
+                            //double anno = (double) edge.getAnnotation().get();
+                            //if (map.get(edge.getDestination()) > map.get(edge.getStart())+ anno ) {
+                                result.setOpen(edge.getDestination());
+                                map.put(edge.getDestination(), map.get(edge.getStart()) + anno);
+                                NodeInformation<N, A> info = new NodeInformation<>(edge, map.get(edge.getStart()) + anno);
+                                result.infoMap.put(edge.getDestination(),info);
+                            //} else stop();
+                        }
+                    }
+                }
+                result.setClosed(n);
+                que.remove(n);
+
+            }
+        }
+        return result;
+    }
+
+    public SearchResult<N, A> findAllPaths() {
+        return findPaths(new SearchStopFactory().expandAllNodes());
+    }
+
+    public ObservableSearchResult<N, A> getSearchResult() {
+        return result;
+    }
+
+    public N getStart() {
+        return start;
+    }
+
+    public G getGraph() {
+        return graph;
+    }
+
+    public void stop() {
+        stopped = true;
+
+    }
+
+
+    @Override
+    public double getEstimatedDistance(N node, N destination) {
+        return estimationFunction.getEstimatedDistance(node,destination);
+    }
+}

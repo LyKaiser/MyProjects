@@ -1,0 +1,98 @@
+package de.jpp.algorithm;
+
+import de.jpp.algorithm.interfaces.*;
+import de.jpp.factory.SearchStopFactory;
+import de.jpp.model.interfaces.Edge;
+import de.jpp.model.interfaces.WeightedGraph;
+
+import java.util.*;
+
+public class DijkstraSearch<N, A, G extends WeightedGraph<N, A>> implements SearchAlgorithm<N, A, G> {
+    private boolean stopped = false;
+    private G graph;
+    private N start;
+    private SearchResultImpl<N, A> result = new SearchResultImpl<>();
+    private LinkedList<N> que = new LinkedList<>();
+    Map<N, Double> map = new HashMap<>();
+
+    public DijkstraSearch(G graph, N start) {
+        this.graph = graph;
+        this.start = start;
+    }
+
+    @Override
+    public SearchResult<N, A> findPaths(SearchStopStrategy<N> type) {
+        Collection<N> nodes = graph.getNodes();
+        for (N node : nodes) {
+            result.statusMap.put(node, NodeStatus.UNKOWN);
+            if (node != start) {
+                map.put(node, Double.MAX_VALUE);
+            }
+        }
+        map.put(start, 0.0);
+        result.setOpen(start);
+        que.add(start);
+        while (!que.isEmpty()) {
+            N n = que.getFirst();
+            que.remove(n);
+            for (Edge<N, A> edge : graph.getNeighbours(n)) {
+                if (result.getNodeStatus(edge.getDestination()).equals(NodeStatus.UNKOWN)) {
+                    result.setOpen(edge.getDestination());
+                    que.add(edge.getDestination());
+                    if (edge.getAnnotation().isPresent()) {
+                        double anno = (double) edge.getAnnotation().get();
+                        map.put(edge.getDestination(), anno);
+                        NodeInformation<N, A> info = new NodeInformation<>(edge, anno);
+                        result.infoMap.put(edge.getDestination(), info);
+                    } else stop();
+                } else if (result.getNodeStatus(edge.getDestination()).equals(NodeStatus.OPEN) || result.getNodeStatus(edge.getDestination()).equals(NodeStatus.CLOSED)) {
+                    if (edge.getAnnotation().isPresent()) {
+                        double anno = (double) edge.getAnnotation().get();
+                        if (map.get(edge.getDestination()) > map.get(edge.getStart()) + anno) {
+                            result.setOpen(edge.getDestination());
+                            map.put(edge.getDestination(), map.get(edge.getStart()) + anno);
+                            NodeInformation<N, A> info = new NodeInformation<>(edge, map.get(edge.getStart()) + anno);
+                            result.infoMap.put(edge.getDestination(), info);
+                        } else stop();
+                    }
+                }
+            }
+            result.setClosed(n);
+            que.remove(n);
+            if (type.stopSearch(n)){
+                stop();
+            }
+            if (stopped){
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    @Override
+    public SearchResult<N, A> findAllPaths() {
+        return findPaths(new SearchStopFactory().expandAllNodes());
+    }
+
+    @Override
+    public ObservableSearchResult<N, A> getSearchResult() {
+        return result;
+    }
+
+    @Override
+    public N getStart() {
+        return start;
+    }
+
+    @Override
+    public G getGraph() {
+        return graph;
+    }
+
+    @Override
+    public void stop() {
+        stopped = true;
+
+    }
+}

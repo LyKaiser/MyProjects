@@ -1,0 +1,20 @@
+package de.jpp.maze;
+
+import java.util.Random;
+
+public class MazeRandom extends MazeImpl{
+
+    private MazeImpl maze;
+    private Random ran;
+
+
+    public MazeRandom(int width, int height, MazeImpl maze, Random ran) {
+        super(width, height);
+        this.maze = maze;
+        this.ran = ran;
+    }
+
+
+
+
+}

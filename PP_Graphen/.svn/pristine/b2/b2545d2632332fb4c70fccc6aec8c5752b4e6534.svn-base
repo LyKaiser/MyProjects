@@ -1,0 +1,86 @@
+package de.jpp.algorithm;
+import de.jpp.algorithm.interfaces.*;
+import de.jpp.model.interfaces.Edge;
+import de.jpp.model.interfaces.Graph;
+
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
+
+public abstract class BreadthFirstSearchTemplate<N, A, G extends Graph<N, A>> implements SearchAlgorithm<N,A,G> {
+  private boolean stopped;
+  private G graph;
+  private N start;
+  private SearchResultImpl<N,A> result;
+
+    public BreadthFirstSearchTemplate(G graph, N start) {
+        this.graph = graph;
+        this.start = start;
+    }
+
+    @Override
+    public SearchResult<N, A> findPaths(SearchStopStrategy<N> type) {
+
+        Collection<N> nodes= graph.getNodes();
+        Collection<Edge<N,A>> edges = graph.getEdges();
+
+        LinkedList<N> nodesList=new LinkedList<>();
+        nodesList.add(start);
+        result.statusMap.put(start,NodeStatus.OPEN);
+
+        for (Edge<N,A> edge:edges){
+            if (edge.getStart().equals(start)){
+                nodesList.add(edge.getDestination());
+                nodesList.removeFirst();
+
+            }
+        }
+
+
+
+
+
+        /*Collection<N> nodes= graph.getNodes();
+        Collection<Edge<N,A>> edges = graph.getEdges();
+        for (N node : nodes){
+            result.statusMap.put(node, NodeStatus.UNKOWN);
+        }
+        for (Edge<N,A> edge:edges){
+            NodeInformation<N,A> nInfo =getNodeInformation(edge,edge.getAnnotation().get());
+            result.infoMap.put(edge.getStart(),nInfo);
+        }*/
+
+        return result;
+    }
+
+    @Override
+    public SearchResult<N, A> findAllPaths() {
+        return result;
+    }
+
+    @Override
+    public ObservableSearchResult<N, A> getSearchResult() {
+        return result;
+    }
+
+    @Override
+    public N getStart() {
+        return start;
+    }
+
+    @Override
+    public G getGraph() {
+        return graph;
+    }
+
+    @Override
+    public void stop() {
+        if (stopped){
+
+        }
+
+    }
+    public abstract NodeInformation<N,A> getNodeInformation(Edge<N,A> edge,A anno);
+    public abstract void openIfShorter(N node,NodeInformation<N,A> info);
+}

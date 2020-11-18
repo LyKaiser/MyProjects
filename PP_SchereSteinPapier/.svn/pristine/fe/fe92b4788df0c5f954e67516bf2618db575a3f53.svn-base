@@ -1,0 +1,5 @@
+package jpp.gametheory.generic;
+
+public class BenutzerException extends NullPointerException {
+    public String error;
+}

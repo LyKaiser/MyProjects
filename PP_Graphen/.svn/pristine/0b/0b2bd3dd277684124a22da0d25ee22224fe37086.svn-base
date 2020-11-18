@@ -1,0 +1,28 @@
+package de.jpp.algorithm;
+
+import de.jpp.algorithm.interfaces.SearchResult;
+import de.jpp.model.TwoDimGraph;
+import de.jpp.model.XYNode;
+import de.jpp.model.interfaces.Edge;
+import de.jpp.model.interfaces.Graph;
+
+public abstract class DijkstraSearch extends BreadthFirstSearchTemplate<XYNode,Double, TwoDimGraph> {
+    public DijkstraSearch(boolean stopped, Graph<XYNode, Double> graph, XYNode start, SearchResultImpl<XYNode, Double> result) {
+        super(stopped, graph, start, result);
+    }
+
+
+    //public DijkstraSearch(boolean stopped, Graph<XYNode, Double> graph, XYNode start, SearchResult<XYNode, Double> result) {
+        //super(stopped, graph, start, result);
+    //}
+
+    //@Override
+    public NodeInformation getNodeInformation(Edge<XYNode, Double> edge, double d) {
+        return null;
+    }
+
+    @Override
+    public void openIfShorter(XYNode node, NodeInformation info) {
+
+    }
+}

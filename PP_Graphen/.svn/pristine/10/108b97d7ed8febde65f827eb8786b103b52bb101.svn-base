@@ -1,0 +1,90 @@
+package de.jpp.algorithm;
+
+import de.jpp.algorithm.interfaces.*;
+import de.jpp.factory.SearchStopFactory;
+import de.jpp.model.interfaces.Edge;
+import de.jpp.model.interfaces.Graph;
+
+import java.util.*;
+
+public class DepthFirstSearch<N, A, G extends Graph<N, A>> implements SearchAlgorithm<N, A, G> {
+    private boolean stopped = false;
+    private G graph;
+    private N start;
+    private SearchResultImpl<N, A> result = new SearchResultImpl<>();
+
+    public DepthFirstSearch(G graph, N start) {
+        this.graph = graph;
+        this.start = start;
+    }
+
+    @Override
+    public SearchResult<N, A> findPaths(SearchStopStrategy<N> type) {
+
+        Collection<N> nodes = graph.getNodes();
+        for (N node : nodes) {
+            result.statusMap.put(node, NodeStatus.UNKOWN);
+        }
+        result.setClosed(start);
+        if (type.stopSearch(start)) {
+            stop();
+        }
+        if (!stopped) {
+            rekDFS(start, type);
+        }
+
+
+        return result;
+    }
+
+    public void rekDFS(N node, SearchStopStrategy<N> type) {
+        Collection<Edge<N, A>> neighbours = graph.getNeighbours(node);
+
+        if (!stopped) {
+            result.setClosed(node);
+            for (Edge<N, A> e : neighbours) {
+                if (result.getNodeStatus(e.getDestination()).equals(NodeStatus.UNKOWN)) {
+                    NodeInformation<N,A> info;
+                    if (e.getAnnotation().isPresent()){
+                        info= new NodeInformation<>(e,(double)e.getAnnotation().get());
+                    }else info=new NodeInformation<>(e,1);
+                    result.infoMap.put(e.getDestination(),info);
+
+                    if (type.stopSearch(e.getDestination())) {
+                        stop();
+                    }
+                    rekDFS(e.getDestination(), type);
+                }
+                //result.setClosed(e.getDestination());
+            }
+        }
+
+
+    }
+
+    @Override
+    public SearchResult<N, A> findAllPaths() {
+        return findPaths(new SearchStopFactory().expandAllNodes());
+    }
+
+    @Override
+    public ObservableSearchResult<N, A> getSearchResult() {
+        return result;
+    }
+
+    @Override
+    public N getStart() {
+        return start;
+    }
+
+    @Override
+    public G getGraph() {
+        return graph;
+    }
+
+    @Override
+    public void stop() {
+        stopped = true;
+
+    }
+}

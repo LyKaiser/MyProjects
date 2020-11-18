@@ -1,0 +1,60 @@
+package jpp.gametheory.generic;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+public class Player<C extends IChoice> implements IPlayer<C> {
+
+    private final String name;
+    private IStrategy<C> strategy;
+
+    public Player(String name, IStrategy<C> strategy) {
+        this.strategy = strategy;
+        this.name = name;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public IStrategy<C> getStrategy() {
+        return strategy;
+    }
+
+    @Override
+    public C getChoice(List<IGameRound<C>> previousRounds) {
+        return strategy.getChoice(this, previousRounds);
+    }
+
+    @Override
+    public int compareTo(IPlayer<C> o) {
+        ArrayList<String> namelist = new ArrayList<>();
+        String player = o.getName();
+        namelist.add(player);
+        namelist.add(this.name);
+        Collections.sort(namelist);
+        return namelist.indexOf(player);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Player<?> player = (Player<?>) o;
+        return Objects.equals(name, player.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+
+    @Override
+    public String toString() {
+        return "" + name + "(" + strategy + ")";
+    }
+}

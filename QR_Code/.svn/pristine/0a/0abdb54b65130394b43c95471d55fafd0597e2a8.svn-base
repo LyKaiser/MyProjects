@@ -1,0 +1,54 @@
+package jpp.qrcode.io;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class TextReader {
+
+    public static boolean[][] read(InputStream in) throws IOException {
+        if (in == null) {
+            throw new IOException();
+        }
+
+        InputStreamReader isr = new InputStreamReader(in);
+        BufferedReader bu = new BufferedReader(isr);
+        String zeile;
+
+        List<List<Boolean>> qrCode = new ArrayList<>();
+
+        while ((zeile = bu.readLine()) != null) {
+            if (zeile.isEmpty() || zeile.startsWith("#")) {
+                continue;
+            }
+            List<Boolean> li = new ArrayList<>();
+            for (int a = 0; a < zeile.length(); a++) {
+                if (zeile.charAt(a) == '0') {
+                    li.add(false);
+                } else if (zeile.charAt(a) == '1') {
+                    li.add(true);
+                } else if (zeile.charAt(a) != ' ') {
+                    throw new IOException();
+                }
+            }
+            qrCode.add(li);
+        }
+        int z = 0;
+        int s = 0;
+        boolean[][] qrCodeEnde = new boolean[qrCode.size()][];
+
+        for (int i = 0; i < qrCodeEnde.length; i++) {
+            qrCodeEnde[i] = new boolean[qrCode.get(i).size()];
+        }
+
+        for (List<Boolean> bool : qrCode) {
+            for (Boolean booli : bool) {
+                qrCodeEnde[z][s] = booli;
+                s++;
+            }
+            s=0;
+            z++;
+        }
+        return qrCodeEnde;
+    }
+}

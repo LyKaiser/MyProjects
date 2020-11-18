@@ -1,0 +1,21 @@
+package jpp.qrcode.encode;
+
+import jpp.qrcode.*;
+
+public class Encoder {
+
+	public static QRCode createFromString(String msg, ErrorCorrection correction) {
+		DataEncoderResult res = DataEncoder.encodeForCorrectionLevel(msg,correction);
+		Version versio = res.version();
+		boolean[][] matrix = PatternPlacer.createBlankForVersion(versio);
+		ReservedModulesMask mask = new ReservedModulesMask(matrix);
+		byte[] by = DataStructurer.structure(res.bytes(),res.version().correctionInformationFor(correction));
+		DataInserter.insert(matrix,mask,by);
+		MaskPattern maskP = MaskSelector.maskWithBestMask(matrix,correction,mask);
+		QRCode result = new QRCode(matrix,versio,maskP,correction);
+
+
+		return result;
+
+	}
+}

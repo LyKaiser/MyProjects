@@ -1,0 +1,119 @@
+package jpp.qrcode.encode;
+
+import jpp.qrcode.Version;
+
+public class PatternPlacer {
+    public static void placeOrientation(boolean[][] res, Version version) {
+        int size = res.length;
+        for (int a = 0; a < 7; a++) {
+            for (int b = 0; b < 7; b++) {
+                res[a][b] = true;
+            }
+        }
+        for (int a = size - 7; a < res.length; a++) {
+            for (int b = 0; b < 7; b++) {
+                res[a][b] = true;
+            }
+        }
+        for (int a = 0; a < 7; a++) {
+            for (int b = size - 7; b < res[0].length; b++) {
+                res[a][b] = true;
+            }
+        }
+    }
+
+    public static void placeTiming(boolean[][] res, Version version) {
+        int size = res.length;
+        for (int a = 8; a < size - 7; a++) {
+            res[a][6] = true;
+            res[6][a] = true;
+        }
+    }
+
+    public static void placeAlignment(boolean[][] res, Version version) {
+        int[] align = version.alignmentPositions();
+        for (int i = 0; i < align.length; i++) {
+            for (int j = 0; j < align.length; j++) {
+                if (!res[align[j] - 1][align[i] - 1]) {
+                    for (int a = align[j] - 2; a < align[j] + 3; a++) {
+                        for (int b = align[i] - 2; b < align[i] + 3; b++) {
+                            res[a][b] = true;
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+
+    public static void placeVersionInformation(boolean[][] data, int versionInformation) {
+        int size = data.length;
+        if (versionInformation > 6) {
+            for (int a = size - 11; a < size - 8; a++) {
+                for (int b = 0; b < 7; b++) {
+                    data[a][b] = true;
+                }
+            }
+            for (int a = 0; a < 6; a++) {
+                for (int b = size - 11; b < size - 8; b++) {
+                    data[a][b] = true;
+                }
+            }
+        }
+    }
+
+    public static boolean[][] createBlankForVersion(Version version) {
+        int versioGr = version.size();
+        boolean[][] matrix = new boolean[versioGr][versioGr];
+        int size = matrix.length;
+        for (int a = 0; a < 7; a++) {
+            for (int b = 0; b < 7; b++) {
+                matrix[a][b] = true;
+            }
+        }
+        for (int a = size - 7; a < matrix.length; a++) {
+            for (int b = 0; b < 7; b++) {
+                matrix[a][b] = true;
+            }
+        }
+        for (int a = 0; a < 7; a++) {
+            for (int b = size - 7; b < matrix[0].length; b++) {
+                matrix[a][b] = true;
+            }
+        }
+        for (int a = 8; a < size - 7; a++) {
+            matrix[a][6] = true;
+            matrix[6][a] = true;
+        }
+        int[] align = version.alignmentPositions();
+        for (int i = 0; i < align.length; i++) {
+            for (int j = 0; j < align.length; j++) {
+                if (!matrix[align[j] - 1][align[i] - 1]) {
+                    for (int a = align[j] - 2; a < align[j] + 3; a++) {
+                        for (int b = align[i] - 2; b < align[i] + 3; b++) {
+                            matrix[a][b] = true;
+                        }
+                    }
+
+                }
+            }
+        }
+        matrix[size - 8][8] = true;
+        if (version.number() > 6) {
+            for (int a = size - 11; a < size - 8; a++) {
+                for (int b = 0; b < 7; b++) {
+                    matrix[a][b] = true;
+                }
+            }
+            for (int a = 0; a < 6; a++) {
+                for (int b = size - 11; b < size - 8; b++) {
+                    matrix[a][b] = true;
+                }
+            }
+        }
+        return matrix;
+
+
+    }
+}
+

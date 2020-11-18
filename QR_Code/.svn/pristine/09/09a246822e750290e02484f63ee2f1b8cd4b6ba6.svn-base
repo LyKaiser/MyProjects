@@ -1,0 +1,5 @@
+package jpp.qrcode;
+
+public class QRCodeException extends RuntimeException {
+    String message;
+}

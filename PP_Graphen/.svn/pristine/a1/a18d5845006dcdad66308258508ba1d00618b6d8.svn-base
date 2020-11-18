@@ -1,0 +1,141 @@
+package de.jpp.maze;
+
+import de.jpp.io.interfaces.ParseException;
+
+import java.awt.image.BufferedImage;
+import java.util.Random;
+
+public class MazeImpl implements Maze {
+
+    private int width;
+    private int height;
+    private boolean[][] cells;
+    private boolean[][] hWall;
+    private boolean[][] vWall;
+    private Maze maze;
+
+    public MazeImpl(int width, int height) {
+        this.width = width;
+        this.height = height;
+        cells = new boolean[width][height];
+        hWall = new boolean[width - 1][height];
+        vWall = new boolean[width][height - 1];
+
+    }
+
+    @Override
+    public void setHWall(int x, int y, boolean wallActive) {
+        hWall[x][y] = wallActive;
+    }
+
+    @Override
+    public void setVWall(int x, int y, boolean wallActive) {
+        vWall[x][y] = wallActive;
+    }
+
+    @Override
+    public void setAllWalls(boolean wallActive) {
+        for (int i = 0; i < hWall.length; i++) {
+            for (int j = 0; j < hWall[i].length; j++) {
+                hWall[i][j] = wallActive;
+            }
+        }
+        for (int i = 0; i < vWall.length; i++) {
+            for (int j = 0; j < vWall[i].length; j++) {
+                vWall[i][j] = wallActive;
+            }
+        }
+    }
+
+    @Override
+    public int getWidth() {
+        return width;
+    }
+
+    @Override
+    public int getHeight() {
+        return height;
+    }
+
+    public boolean[][] getCells() {
+        return cells;
+    }
+
+    public boolean[][] gethWall() {
+        return hWall;
+    }
+
+    public boolean[][] getvWall() {
+        return vWall;
+    }
+
+    @Override
+    public boolean isHWallActive(int x, int y) {
+        if (x<=hWall.length&&y<=hWall[x].length){
+            return hWall[x][y];
+        }else return true;
+
+    }
+
+    @Override
+    public boolean isVWallActive(int x, int y) {
+        if (x<=vWall.length&&y<=vWall[x].length){
+            return vWall[x][y];
+        }else return true;
+
+    }
+
+    public Maze unterteile(int widthNeu, int heightNeu, Random ran) {
+        if (width != 1 && height != 1) {
+            if (widthNeu > heightNeu) {
+                unterteileLabyHorizontal(ran);
+            } else if (heightNeu > widthNeu) {
+                unterteileLabyVertikal(ran);
+            } else {
+                boolean bool = ran.nextBoolean();
+                if (bool) {
+                    unterteileLabyHorizontal(ran);
+                } else unterteileLabyVertikal(ran);
+            }
+        }
+        return maze;
+
+    }
+
+    public void unterteileLabyHorizontal(Random ran) {
+
+        int ran1=ran.nextInt(width-1);
+        int ran2=ran.nextInt(height-1);
+
+        for (int i=1;i<height;i++){
+            if (i!=ran2){
+                maze.setHWall(ran1,i,true);
+            }
+        }
+        //Maze neulinks= new MazeImpl(ran1,height);
+        //Maze neurechts= new MazeImpl(width-ran1,height);
+
+        unterteile(ran1,height,ran);
+        unterteile(width-ran1,height,ran);
+
+
+
+
+    }
+
+    public void unterteileLabyVertikal(Random ran) {
+        int ran1=ran.nextInt(height-1);
+        int ran2=ran.nextInt(width-1);
+
+        for (int i=1;i<height;i++){
+            if (i!=ran2){
+                maze.setVWall(ran1,i,true);
+            }
+        }
+        //Maze neulinks= new MazeImpl(ran1,height);
+        //Maze neurechts= new MazeImpl(width-ran1,height);
+
+        unterteile(width,ran1,ran);
+        unterteile(width,height-ran1,ran);
+    }
+}

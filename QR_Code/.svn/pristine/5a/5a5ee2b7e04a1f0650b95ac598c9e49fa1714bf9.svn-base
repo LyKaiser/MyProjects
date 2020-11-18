@@ -1,0 +1,104 @@
+package jpp.qrcode.encode;
+
+import jpp.qrcode.ErrorCorrection;
+import jpp.qrcode.Version;
+
+public final class DataEncoder {
+    public static DataEncoderResult encodeForCorrectionLevel(String str, ErrorCorrection level) {
+        byte[] bystr = new byte[str.length()];
+        bystr = str.getBytes();
+
+        int laengeDaten = (4 + 8 + 8 * str.length() + 4) / 8;
+        Version versio = Version.forDataBytesCount(laengeDaten, level);
+
+        int versioNr = versio.number();
+        int paddingBytes = 0;
+        if (versioNr > 9) {
+            paddingBytes = versio.size() - laengeDaten;
+        }
+
+        int laenge = versio.totalByteCount();
+        if (versioNr>9){
+            laenge+=24;
+        }else laenge+=16;
+
+        byte[] by = new byte[laenge];
+        for (int i = 0; i < 5; i++) {
+            if (i == 1) {
+                by[i] = 1;
+            } else by[i] = 0;
+        }
+        int pos = 4;
+        if (versioNr > 9) {
+            for (int i = 14; i >= 0; i--) {
+                boolean bit = ((str.length() >> i) & 1) != 0;
+                if (bit) {
+                    by[pos] = 1;
+                    pos++;
+                } else {
+                    by[pos] = 0;
+                    pos++;
+                }
+            }
+        } else {
+            for (int i = 7; i >= 0; i--) {
+                boolean bit = ((str.length() >> i) & 1) != 0;
+                if (bit) {
+                    by[pos] = 1;
+                    pos++;
+                } else {
+                    by[pos] = 0;
+                    pos++;
+                }
+            }
+        }
+
+        for (byte b : bystr) {
+            for (int i = 7; i >= 0; i--) {
+                boolean bit = ((b >> i) & 1) != 0;
+                if (bit) {
+                    by[pos] = 1;
+                    pos++;
+                } else {
+                    by[pos] = 0;
+                    pos++;
+                }
+
+            }
+        }
+        int j = pos;
+        for (int i = j; i < j + 5; i++) {
+            by[pos] = 0;
+            pos++;
+        }
+        if (versioNr > 9) {
+            for (int i = paddingBytes; i > 0; i--) {
+                if (i % 2 == 0) {
+                    for (int a = 0; a < 8; a++) {
+                        if (a == 3 || a == 7) {
+                            by[pos] = 1;
+                            pos++;
+                        } else {
+                            by[pos] = 0;
+                            pos++;
+                        }
+                    }
+                } else {
+                    for (int a = 0; a < 8; a++) {
+                        if (a == 3 || a == 6 || a == 7) {
+                            by[pos] = 0;
+                            pos++;
+                        } else {
+                            by[pos] = 1;
+                            pos++;
+                        }
+                    }
+                }
+
+            }
+        }
+        DataEncoderResult result = new DataEncoderResult(by, versio);
+        return result;
+
+    }
+}

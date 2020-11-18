@@ -1,0 +1,72 @@
+package de.jpp.maze;
+
+import java.util.Random;
+
+public class MazeRandom {
+
+    private MazeImpl maze;
+    private Random ran;
+    private int width;
+    private int height;
+    private boolean[][] cells;
+
+    public MazeRandom(MazeImpl maze, Random ran) {
+        this.maze = maze;
+        this.ran = ran;
+        width = maze.getWidth();
+        height = maze.getHeight();
+        cells = maze.getCells();
+    }
+
+    public Maze unterteile(int widthNeu, int heightNeu, int startW, int endW, int startH,int endH) {
+
+        if (width != 1 && height != 1) {
+            if (widthNeu > heightNeu) {
+                unterteileLabyHorizontal(startW,endW,startH,endH);
+            } else if (heightNeu > widthNeu) {
+                unterteileLabyVertikal(startW,endW,startH,endH);
+            } else {
+                boolean bool = ran.nextBoolean();
+                if (bool) {
+                    unterteileLabyHorizontal(startW,endW,startH,endH);
+                } else unterteileLabyVertikal(startW,endW,startH,endH);
+            }
+        }
+        return maze;
+
+    }
+
+    public void unterteileLabyHorizontal(int startW, int endW, int startH,int endH) {
+
+        int ran1 = (int) (Math.random() * endW-1) + startW;//ran.nextInt(widthNeu - 1);
+        int ran2 = (int) (Math.random() * endH-1) + startH;
+
+        for (int i = startH; i < endH-startH; i++) {
+            if (i != ran2) {
+                maze.setHWall(ran1, i, true);
+            }
+        }
+        unterteile(ran1, height, 0,ran1,0,height);
+        unterteile(width - ran1, height, ran1,width,0,height);
+
+
+    }
+
+    public void unterteileLabyVertikal(int startW, int endW, int startH,int endH) {
+        int ran1 = (int) (Math.random() * endH-1) + startH;
+        int ran2 = (int) (Math.random() * endW-1) + startW;
+
+        for (int i = startW; i < endW-startW; i++) {
+            if (i != ran2) {
+                maze.setVWall(i, ran1, true);
+            }
+        }
+        //Maze neulinks= new MazeImpl(ran1,height);
+        //Maze neurechts= new MazeImpl(width-ran1,height);
+
+        unterteile(width, ran1,0,width,0,ran1);
+        unterteile(width, height - ran1,0,width,ran1,width);
+    }
+
+
+}

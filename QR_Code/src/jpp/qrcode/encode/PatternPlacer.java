@@ -1,0 +1,170 @@
+package jpp.qrcode.encode;
+
+import jpp.qrcode.InvalidQRCodeException;
+import jpp.qrcode.Version;
+import jpp.qrcode.VersionInformation;
+
+public class PatternPlacer {
+    public static void placeOrientation(boolean[][] res, Version version) {
+        int size = res.length;
+        //OrientationPattern linksOben Rahmen
+        for (int a = 0; a < 7; a++) {
+            res[a][0] = true;
+            res[a][6] = true;
+            res[0][a] = true;
+            res[6][a] = true;
+        }
+
+        //linksOben inneres
+        for (int a = 1; a < 6; a++) {
+            res[a][1] = false;
+            res[a][5] = false;
+            res[1][a] = false;
+            res[5][a] = false;
+        }
+
+        //linksOben innerinner
+        for (int a = 2; a < 5; a++) {
+            for (int b = 2; b < 5; b++) {
+                res[a][b] = true;
+            }
+        }
+        //OrientationPattern linksUnten Rahmen
+        for (int a = 0; a < 7; a++) {
+            res[size - 7][a] = true;
+            res[size - 1][a] = true;
+        }
+        for (int a = size - 7; a < size; a++) {
+            res[a][0] = true;
+            res[a][6] = true;
+        }
+
+        //linksUnten inneres
+        for (int a = 1; a < 6; a++) {
+            res[size - 6][a] = false;
+            res[size - 2][a] = false;
+        }
+        for (int a = size - 6; a < size - 1; a++) {
+            res[a][1] = false;
+            res[a][5] = false;
+        }
+
+        //linksUnten innerinner
+        for (int a = size - 5; a < size - 2; a++) {
+            for (int b = 2; b < 5; b++) {
+                res[a][b] = true;
+            }
+        }
+
+        //OrientationPattern rechtsOben Rahmen
+        for (int a = 0; a < 7; a++) {
+            res[a][size - 7] = true;
+            res[a][size - 1] = true;
+        }
+        for (int a = size - 7; a < size; a++) {
+            res[0][a] = true;
+            res[6][a] = true;
+        }
+
+        //rechtsOben inneres
+        for (int a = 1; a < 6; a++) {
+            res[a][size - 6] = false;
+            res[a][size - 2] = false;
+        }
+        for (int a = size - 6; a < size - 1; a++) {
+            res[1][a] = false;
+            res[5][a] = false;
+        }
+
+        //rechtsOben innerinner
+        for (int a = 2; a < 5; a++) {
+            for (int b = size - 5; b < size - 2; b++) {
+                res[a][b] = true;
+            }
+        }
+    }
+
+    public static void placeTiming(boolean[][] res, Version version) {
+        int size = res.length;
+        for (int a = 9; a < size - 8; a += 2) {
+            res[a][6] = false;
+            res[6][a] = false;
+        }
+        for (int a = 8; a < size - 8; a += 2) {
+            res[a][6] = true;
+            res[6][a] = true;
+        }
+    }
+
+    public static void placeAlignment(boolean[][] res, Version version) {
+        int[] align = version.alignmentPositions();
+        for (int i = 0; i < align.length; i++) {
+            for (int j = 0; j < align.length; j++) {
+                if (!(align[i] == 6 && align[j] == 6) && !(align[i] == 6 && align[j] == res.length - 7) && !(align[i] == res.length - 7 && align[j] == 6)) {
+                    res[align[i]][align[j]] = true;
+                    for (int a = align[i] - 1; a < align[i] + 2; a++) {
+                        res[a][align[j] - 1] = false;
+                        res[a][align[j] + 1] = false;
+                    }
+                    for (int a = align[j] - 1; a < align[j] + 2; a++) {
+                        res[align[i] - 1][a] = false;
+                        res[align[i] + 1][a] = false;
+                    }
+                    for (int a = align[i] - 2; a < align[i] + 3; a++) {
+                        res[a][align[j] - 2] = true;
+                        res[a][align[j] + 2] = true;
+                    }
+                    for (int a = align[j] - 2; a < align[j] + 3; a++) {
+                        res[align[i] - 2][a] = true;
+                        res[align[i] + 2][a] = true;
+                    }
+
+                }
+            }
+        }
+    }
+
+    public static void placeVersionInformation(boolean[][] data, int versionInformation) {
+
+        String s = Integer.toBinaryString(versionInformation);
+
+        int pos = s.length() - 1;
+        int size = data.length;
+
+        for (int a = 0; a < 6; a++) {
+            for (int b = size - 11; b < size - 8; b++) {
+                if (pos >= 0) {
+                    if (s.charAt(pos) == '1') {
+                        data[a][b] = true;
+                        data[b][a] = true;
+                    } else {
+                        data[a][b] = false;
+                        data[b][a] = false;
+                    }
+                }
+                pos--;
+            }
+        }
+    }
+
+
+    public static boolean[][] createBlankForVersion(Version version) {
+        int versioGr = version.size();
+        boolean[][] matrix = new boolean[versioGr][versioGr];
+        int size = matrix.length;
+        int[] align = version.alignmentPositions();
+        placeOrientation(matrix,version);
+        placeTiming(matrix,version);
+        placeAlignment(matrix,version);
+        //DarkModule
+        matrix[size - 8][8] = true;
+        //Versioninfo
+        if (version.number() > 6) {
+            placeVersionInformation(matrix,VersionInformation.forVersion(version));
+        }
+        return matrix;
+
+
+    }
+}
+

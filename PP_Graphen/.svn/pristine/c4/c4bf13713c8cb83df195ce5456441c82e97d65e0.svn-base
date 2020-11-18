@@ -1,0 +1,57 @@
+package de.jpp.algorithm;
+
+
+import de.jpp.algorithm.interfaces.ObservableSearchResult;
+import de.jpp.algorithm.interfaces.SearchResult;
+import de.jpp.algorithm.interfaces.SearchStopStrategy;
+import de.jpp.model.interfaces.Edge;
+import de.jpp.model.interfaces.Graph;
+
+
+public class BreadthFirstSearch<N, A, G extends Graph<N, A>> extends BreadthFirstSearchTemplate<N,A,G>{
+
+
+    public BreadthFirstSearch(G graph, N start) {
+        super(graph, start);
+    }
+
+    @Override
+    public SearchResult<N, A> findPaths(SearchStopStrategy<N> type) {
+        return super.findPaths(type);
+    }
+
+    @Override
+    public SearchResult<N, A> findAllPaths() {
+        return super.findAllPaths();
+    }
+
+    @Override
+    public ObservableSearchResult<N, A> getSearchResult() {
+        return super.getSearchResult();
+    }
+
+    @Override
+    public N getStart() {
+        return super.getStart();
+    }
+
+    @Override
+    public G getGraph() {
+        return super.getGraph();
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+    }
+
+    @Override
+    public NodeInformation<N, A> getNodeInformation(Edge<N, A> edge, double anno) {
+        return new NodeInformation<>(edge,anno);
+    }
+
+    @Override
+    public void openIfShorter(N node, NodeInformation<N, A> info) {
+
+    }
+}

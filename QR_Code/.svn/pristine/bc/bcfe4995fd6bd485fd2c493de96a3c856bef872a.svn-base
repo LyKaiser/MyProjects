@@ -1,0 +1,31 @@
+package jpp.qrcode.io;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+public class TextReader {
+
+    public static boolean[][] read(InputStream in) throws IOException {
+        if (in == null) {
+            throw new IOException();
+        }
+
+        byte[] alle = in.readAllBytes();
+        int size = (int) Math.pow(alle.length, 2);
+        boolean[][] qrCode = new boolean[size][size];
+
+
+        for (byte b : alle) {
+            if (b == 1 || b == 0 || b == '#' || b == ' ') {
+                for (int i = 0; i < qrCode.length; i++) {
+                    for (int j = 0; j < qrCode[0].length; j++) {
+                        if (b == 1) {
+                            qrCode[i][j] = true;
+                        } else qrCode[i][j] = false;
+                    }
+                }
+            } else throw new IOException();
+        }
+        return qrCode;
+    }
+}

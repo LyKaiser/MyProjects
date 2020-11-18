@@ -1,0 +1,93 @@
+package jpp.gametheory.generic;
+
+import java.util.*;
+
+public class GameRound<C extends IChoice> implements IGameRound<C> {
+
+
+    private Map<IPlayer<C>, C> playerChoices;
+    //private List<Map<IPlayer<C>,C>> playRounds= new ArrayList<>();
+
+
+    public GameRound(Map<IPlayer<C>, C> playerChoices) throws IllegalArgumentException {
+        if (playerChoices.size() <= 1) {
+            IllegalException e = new IllegalException();
+            e.error = "Zu wenig Spieler - min. zwei Spieler!";
+            throw e;
+        }
+        this.playerChoices = playerChoices;
+    }
+
+
+    //public List<Map<IPlayer<C>,C>> getPlayRounds(){
+    //  playRounds.add(playerChoices);
+    // return playRounds;
+    //}
+
+    @Override
+    public Map<IPlayer<C>, C> getPlayerChoices() {
+        return playerChoices;
+    }
+
+    @Override
+    public C getChoice(IPlayer<C> player) throws NullPointerException, IllegalArgumentException {
+        if (player == null) {
+            throw new NullPointerException();
+        }
+        if (playerChoices.get(player) == null) {
+            IllegalException x = new IllegalException();
+            x.error = "Spieler hat nicht mitgespielt!";
+            throw x;
+        }
+        return playerChoices.get(player);
+    }
+
+    @Override
+    public Set<IPlayer<C>> getPlayers() {
+        Set<IPlayer<C>> spielerSet = new HashSet<>();
+        for (IPlayer<C> key : playerChoices.keySet()) {
+            spielerSet.add(key);
+        }
+        return spielerSet;
+    }
+
+    @Override
+    public Set<IPlayer<C>> getOtherPlayers(IPlayer<C> player) throws NullPointerException, IllegalArgumentException {
+        if (player == null) {
+            throw new NullPointerException();
+        }
+        if (playerChoices.get(player) == null) {
+            IllegalException x = new IllegalException();
+            x.error = "Spieler hat nicht mitgespielt!";
+            throw x;
+        }
+
+        Set<IPlayer<C>> andereSpieler = new HashSet<>();
+        for (IPlayer<C> key : playerChoices.keySet()) {
+            if (!(key == player)) {
+                andereSpieler.add(key);
+            }
+        }
+        return andereSpieler;
+    }
+
+    @Override
+    public String toString() {
+        Map<IPlayer<C>,C> soriert = new TreeMap<>(playerChoices);
+        StringBuilder s = new StringBuilder();
+        int counter = 1;
+
+        for (IPlayer<C> key : soriert.keySet()) {
+            C choice = soriert.get(key);
+            if (counter<soriert.size()){
+                s.append(key.getName()).append(" -> ").append(choice).append(", ");
+            }
+            else {
+                s.append(key.getName()).append(" -> ").append(choice);
+            }
+            counter+=1;
+            }
+        return "(" + s.toString() + ")";
+
+    }
+}

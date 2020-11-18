@@ -1,0 +1,129 @@
+package de.jpp.algorithm;
+import de.jpp.algorithm.interfaces.NodeStatus;
+import de.jpp.algorithm.interfaces.ObservableSearchResult;
+import de.jpp.algorithm.interfaces.SearchResult;
+import de.jpp.model.interfaces.Edge;
+
+import java.util.*;
+import java.util.function.BiConsumer;
+
+public class SearchResultImpl<N, A> implements ObservableSearchResult<N, A> {
+
+    Map<N, NodeStatus> statusMap=new HashMap<>();
+    Map<N, NodeInformation<N, A>> infoMap=new HashMap<>();
+    List<BiConsumer<N, SearchResult<N, A>>> onOpenLi=new ArrayList<>();
+    List<BiConsumer<N, SearchResult<N, A>>> onCloseLi=new ArrayList<>();
+
+    public SearchResultImpl() {
+    }
+
+    @Override
+    public void addNodeOpenedListener(BiConsumer<N, SearchResult<N, A>> onOpen) {
+        onOpenLi.add(onOpen);
+    }
+
+    @Override
+    public void removeNodeOpenedListener(BiConsumer<N, SearchResult<N, A>> onOpen) {
+        onOpenLi.remove(onOpen);
+
+    }
+
+    @Override
+    public void addNodeClosedListener(BiConsumer<N, SearchResult<N, A>> onClose) {
+        onCloseLi.add(onClose);
+    }
+
+    @Override
+    public void removeNodeClosedListener(BiConsumer<N, SearchResult<N, A>> onClose) {
+        onCloseLi.remove(onClose);
+    }
+
+    @Override
+    public NodeStatus getNodeStatus(N node) {
+        return statusMap.get(node);
+    }
+
+    @Override
+    public Optional<Edge<N, A>> getPredecessor(N node) {
+        NodeInformation<N,A> info =infoMap.get(node);
+        if (info.getPredecssor()==null){
+            return Optional.empty();
+        }else return Optional.of(info.getPredecssor());
+    }
+
+    @Override
+    public Collection<N> getAllKnownNodes() {
+        Set<N> set=new HashSet<>();
+        for (N node : statusMap.keySet()){
+            if (!statusMap.get(node).equals(NodeStatus.UNKOWN)){
+                set.add(node);
+            }
+        }
+        return set;
+    }
+
+    @Override
+    public Collection<N> getAllOpenNodes() {
+        Set<N> set=new HashSet<>();
+        for (N node : statusMap.keySet()){
+            if (statusMap.get(node).equals(NodeStatus.OPEN)){
+                set.add(node);
+            }
+        }
+        return set;
+    }
+
+    @Override
+    public void setClosed(N node) {
+        if (statusMap.get(node)!=null){
+            statusMap.put(node,NodeStatus.CLOSED);
+            for (BiConsumer<N,SearchResult<N,A>> bi : onCloseLi){
+                bi.accept(node,this);
+            }
+        }
+
+    }
+
+    @Override
+    public void setOpen(N node) {
+        statusMap.put(node,NodeStatus.OPEN);
+        for (BiConsumer<N,SearchResult<N,A>> bi : onOpenLi){
+            bi.accept(node,this);
+        }
+
+    }
+
+    @Override
+    public void clear() {
+        statusMap.clear();
+        infoMap.clear();
+
+    }
+
+    @Override
+    public Optional<List<Edge<N, A>>> getPathTo(N dest) {
+        List<Edge<N,A>> edges= new ArrayList<>();
+        while (infoMap.get(dest)!=null){
+           Edge<N,A> edge = infoMap.get(dest).getPredecssor();
+           edges.add(edge);
+           dest=edge.getStart();
+        }
+        Collections.reverse(edges);
+        if (edges.isEmpty()){
+            return Optional.empty();
+        }else return Optional.of(edges);
+
+    }
+
+    public void close(N node, NodeInformation<N, A> info) {
+
+    }
+
+    public void open(N node, NodeInformation<N, A> info) {
+
+    }
+
+    public NodeInformation<N, A> getInfo(N node) {
+        return null;
+    }
+}

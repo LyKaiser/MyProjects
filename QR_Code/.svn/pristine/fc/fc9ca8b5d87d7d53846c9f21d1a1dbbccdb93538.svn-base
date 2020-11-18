@@ -1,0 +1,56 @@
+package jpp.qrcode.decode;
+
+import jpp.qrcode.Encoding;
+import jpp.qrcode.ErrorCorrection;
+import jpp.qrcode.Version;
+
+public class DataDecoder {
+
+
+    public static Encoding readEncoding(byte[] bytes) {
+        int in = 0;
+        for (int i = 7; i > 3; i--) {
+            if ((bytes[0] & (1 << i)) != 0) {
+                in |= (1 << i);
+            }
+        }
+        return Encoding.fromBits(in);
+    }
+
+    public static int readCharacterCount(byte[] bytes, int count) {
+        int in = 0;
+        if (count < 9) {
+            for (int i = 3; i >= 0; i--) {
+                if ((bytes[0] & (1 << i)) != 0) {
+                    in |= (1 << i);
+                }
+            }
+            for (int i = 7; i > 3; i--) {
+                if ((bytes[1] & (1 << i)) != 0) {
+                    in |= (1 << i);
+                }
+            }
+        } else{
+            for (int i = 3; i >= 0; i--) {
+                if ((bytes[0] & (1 << i)) != 0) {
+                    in |= (1 << i);
+                }
+            }
+            for (int i = 7; i >=0; i--) {
+                if ((bytes[1] & (1 << i)) != 0) {
+                    in |= (1 << i);
+                }
+            }
+            for (int i = 3; i >= 0; i--) {
+                if ((bytes[2] & (1 << i)) != 0) {
+                    in |= (1 << i);
+                }
+            }
+        }
+        return in;
+    }
+
+    public static String decodeToString(byte[] bytes, Version version, ErrorCorrection errorCorrection) {
+        throw new IllegalStateException();
+    }
+}

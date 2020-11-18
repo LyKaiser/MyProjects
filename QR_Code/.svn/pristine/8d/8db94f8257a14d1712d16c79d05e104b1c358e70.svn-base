@@ -1,0 +1,112 @@
+package jpp.qrcode.decode;
+
+import jpp.qrcode.*;
+
+public class DataDecoder {
+
+
+    public static Encoding readEncoding(byte[] bytes) {
+        int in = 0;
+        int pos = 3;
+        for (int i = 7; i > 3; i--) {
+            if ((bytes[0] & (1 << i)) != 0) {
+                in |= (1 << pos);
+            }
+            pos--;
+        }
+        return Encoding.fromBits(in);
+    }
+
+    public static int readCharacterCount(byte[] bytes, int count) {
+        int in = 0;
+        int pos = 7;
+
+        if (count == 8) {
+            for (int i = 3; i >= 0; i--) {
+                if ((bytes[0] & (1 << i)) != 0) {
+                    in |= (1 << pos);
+                    pos--;
+                } else pos--;
+            }
+            for (int i = 7; i > 3; i--) {
+                if ((bytes[1] & (1 << i)) != 0) {
+                    in |= (1 << pos);
+                }
+                pos--;
+            }
+        } else {
+            pos = 15;
+            for (int i = 3; i >= 0; i--) {
+                if ((bytes[0] & (1 << i)) != 0) {
+                    in |= (1 << pos);
+                }
+                pos--;
+            }
+            for (int i = 7; i >= 0; i--) {
+                if ((bytes[1] & (1 << i)) != 0) {
+                    in |= (1 << pos);
+                }
+                pos--;
+            }
+            for (int i = 7; i > 3; i--) {
+                if ((bytes[2] & (1 << i)) != 0) {
+                    in |= (1 << pos);
+                }
+                pos--;
+            }
+        }
+
+        return in;
+    }
+
+    public static String decodeToString(byte[] bytes, Version version, ErrorCorrection errorCorrection) {
+        if (version.correctionInformationFor(errorCorrection).totalDataByteCount() != bytes.length) {
+            throw new IllegalArgumentException();
+        }
+        if (readEncoding(bytes) != Encoding.BYTE) {
+            throw new QRDecodeException();
+        }
+        int cci = 7;
+        if (version.number() > 9) {
+            cci = 15;
+        }
+        if ((cci == 7 && readCharacterCount(bytes, 8) > 256) || (cci == 15 && readCharacterCount(bytes, 16) > 65536)) {
+            throw new QRDecodeException();
+        }
+        String s;
+        //int strLang = readCharacterCount(bytes, cci);
+        byte[] barr = new byte[readCharacterCount(bytes, cci)];
+        byte start = 0;
+        int pos = 1;
+        if (cci == 15) {
+            pos = 2;
+        }
+        for (int a = 0; a < barr.length; a++) {
+            for (int i = 3; i >= 0; i--) {
+                if ((bytes[pos] & (1 << i)) != 0) {
+                    start |= (1 << i);
+                }
+                pos++;
+            }
+            if (pos < barr.length - 1) {
+                for (int i = 7; i > 3; i--) {
+                    if ((bytes[pos] & (1 << i)) != 0) {
+                        start |= (1 << i);
+                    }
+                }
+
+            }
+            barr[a] = start;
+            start = 0;
+        }
+        barr[barr.length-1]=start;
+        s = new String(barr);
+        return s;
+    }
+
+    public static void main(String[] args) {
+        byte[] by = {0b00010000};
+
+        System.out.println(readEncoding(by));
+    }
+}

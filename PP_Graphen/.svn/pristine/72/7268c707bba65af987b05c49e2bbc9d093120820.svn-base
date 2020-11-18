@@ -1,0 +1,63 @@
+package de.jpp.algorithm;
+import de.jpp.algorithm.interfaces.*;
+import de.jpp.model.interfaces.Edge;
+import de.jpp.model.interfaces.Graph;
+import java.util.Collection;
+
+public abstract class BreadthFirstSearchTemplate<N, A, G extends Graph<N, A>> implements SearchAlgorithm<N,A,G> {
+  private boolean stopped;
+  private Graph<N,A> graph;
+  private N start;
+  private SearchResultImpl<N,A> result;
+
+    public BreadthFirstSearchTemplate(boolean stopped, Graph<N, A> graph, N start, SearchResultImpl<N, A> result) {
+        this.stopped = stopped;
+        this.graph = graph;
+        this.start = start;
+        this.result = result;
+    }
+
+    @Override
+    public SearchResult<N, A> findPaths(SearchStopStrategy<N> type) {
+        /*Collection<N> nodes= graph.getNodes();
+        Collection<Edge<N,A>> edges = graph.getEdges();
+        for (N node : nodes){
+            result.statusMap.put(node, NodeStatus.OPEN);
+        }
+        for (Edge<N,A> edge:edges){
+            NodeInformation<N,A> nInfo =getNodeInformation(edge,edge.getAnnotation().get());
+            result.infoMap.put(edge.getStart(),nInfo);
+        }*/
+        return result;
+    }
+
+    @Override
+    public SearchResult<N, A> findAllPaths() {
+        return result;
+    }
+
+    @Override
+    public ObservableSearchResult<N, A> getSearchResult() {
+        return result;
+    }
+
+    @Override
+    public N getStart() {
+        return start;
+    }
+
+    @Override
+    public G getGraph() {
+        return (G) graph;
+    }
+
+    @Override
+    public void stop() {
+        if (stopped){
+
+        }
+
+    }
+    public abstract NodeInformation<N,A> getNodeInformation(Edge<N,A> edge,A anno);
+    public abstract void openIfShorter(N node,NodeInformation<N,A> info);
+}

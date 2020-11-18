@@ -1,0 +1,52 @@
+package jpp.qrcode.decode;
+
+import jpp.qrcode.DataPositions;
+import jpp.qrcode.ReservedModulesMask;
+
+public class DataExtractor {
+
+    public static byte[] extract(boolean[][] data, ReservedModulesMask mask, int byteCount) {
+        if (mask.size() != data.length) {
+            throw new IllegalArgumentException();
+        }
+        DataPositions dPos = new DataPositions(mask);
+        byte[] by = new byte[byteCount];
+
+
+        /*if (data[dPos.i()][dPos.j()]) {
+            by[0] = '1';
+        } else by[0] = '0';*/
+
+        byte start = 0;
+
+        for (int i = 0; i < by.length; i++) {
+            for (int j = 7; j >= 0; j--) {
+                if (data[dPos.i()][dPos.j()]) {
+                    start |= (1 << j);
+                }
+                dPos.next();
+            }
+            by[i]=start;
+            start=0;
+        }
+
+
+        return by;
+    }
+}
+
+
+        /*byte[] alle = new byte[byteCount];
+
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data[0].length; j++) {
+                for (int a = 0; a < alle.length; a++) {
+                    if (data[i][j]) {
+                        alle[a] = 1;
+                    } else alle[a] = 0;
+                }
+            }
+        }
+        return null;
+    }
+}*/

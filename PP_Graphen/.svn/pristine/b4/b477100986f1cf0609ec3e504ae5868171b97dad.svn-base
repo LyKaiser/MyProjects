@@ -1,0 +1,187 @@
+package de.jpp.maze;
+
+import de.jpp.io.interfaces.ParseException;
+
+import java.awt.image.BufferedImage;
+
+public class MazeImpl implements Maze {
+
+    private int width;
+    private int height;
+    private boolean[][] cells;
+    private boolean[][] hWall;
+    private boolean[][] vWall;
+
+    public MazeImpl(int width, int height) {
+        this.width = width;
+        this.height = height;
+        cells = new boolean[width][height];
+        hWall = new boolean[width - 1][height];
+        vWall = new boolean[width][height - 1];
+
+    }
+
+    @Override
+    public void setHWall(int x, int y, boolean wallActive) {
+        hWall[x][y] = wallActive;
+    }
+
+    @Override
+    public void setVWall(int x, int y, boolean wallActive) {
+        vWall[x][y] = wallActive;
+    }
+
+    @Override
+    public void setAllWalls(boolean wallActive) {
+        for (int i = 0; i < hWall.length; i++) {
+            for (int j = 0; j < hWall[i].length; j++) {
+                hWall[i][j] = wallActive;
+            }
+        }
+        for (int i = 0; i < vWall.length; i++) {
+            for (int j = 0; j < vWall[i].length; j++) {
+                vWall[i][j] = wallActive;
+            }
+        }
+    }
+
+    @Override
+    public int getWidth() {
+        return width;
+    }
+
+    @Override
+    public int getHeight() {
+        return height;
+    }
+
+    public boolean[][] getCells() {
+        return cells;
+    }
+
+    public boolean[][] gethWall() {
+        return hWall;
+    }
+
+    public boolean[][] getvWall() {
+        return vWall;
+    }
+
+    @Override
+    public boolean isHWallActive(int x, int y) {
+        if (x<=hWall.length&&y<=hWall[x].length){
+            return hWall[x][y];
+        }else return true;
+
+    }
+
+    @Override
+    public boolean isVWallActive(int x, int y) {
+        if (x<=vWall.length&&y<=vWall[x].length){
+            return vWall[x][y];
+        }else return true;
+
+    }
+}
+    /*private BufferedImage bu;
+
+    public MazeImpl(int width, int height) {
+        this.width = width;
+        this.height = height;
+        bu = new BufferedImage(width * 2 + 1, height * 2 + 1, 5);
+        for (int a=0; a<bu.getWidth();a++){
+            bu.setRGB(a,0,-1677216);
+            bu.setRGB(a,bu.getHeight()-1,-1677216);
+        }
+        for (int b=0; b<bu.getHeight();b++){
+            bu.setRGB(0,b,-1677216);
+            bu.setRGB(bu.getWidth()-1,b,-1677216);
+        }
+    }
+
+
+    @Override
+    public void setHWall(int x, int y, boolean wallActive) {
+        if (x < 1 || y < 1) {
+            throw new IllegalArgumentException();
+        }
+        if (x * 2 + 2 < bu.getHeight() && y * 2 + 1 < bu.getWidth()) {
+            if (wallActive) {
+                bu.setRGB(x * 2 + 2, y * 2 + 1, -1677216);
+            } else bu.setRGB(x * 2 + 2, y * 2 + 1, -1);
+        } else throw new IllegalArgumentException();
+    }
+
+    @Override
+    public void setVWall(int x, int y, boolean wallActive) {
+        if (x < 1 || y < 1) {
+            throw new IllegalArgumentException();
+        }
+        if (x * 2 + 1 < bu.getHeight() && y * 2 + 2 < bu.getWidth()) {
+            if (wallActive) {
+                bu.setRGB(x * 2 + 1, y * 2 + 2, -1677216);
+            } else bu.setRGB(x * 2 + 1, y * 2 + 2, -1);
+        } else throw new IllegalArgumentException();
+    }
+
+    public BufferedImage getBu() {
+        return bu;
+    }
+
+    public void setBu(BufferedImage bu) {
+        this.bu = bu;
+    }
+
+    @Override
+    public void setAllWalls(boolean wallActive) {
+        if (wallActive) {
+            for (int i = 1; i < bu.getWidth()-1; i++) {
+                for (int j = 1; j < bu.getHeight()-1; j++) {
+                    if (i % 2 == 0 || j % 2 == 0) {
+                        bu.setRGB(i, j, -1677216);
+                    }
+                }
+            }
+        }else {for (int i = 1; i < bu.getWidth()-1; i++) {
+            for (int j = 1; j < bu.getHeight()-1; j++) {
+                if (i % 2 == 0 || j % 2 == 0) {
+                    bu.setRGB(i, j, -1);
+                }
+            }
+        }
+
+        }
+    }
+
+    @Override
+    public int getWidth() {
+        return width * 2 + 1;
+    }
+
+    @Override
+    public int getHeight() {
+        return height * 2 + 1;
+    }
+
+    @Override
+    public boolean isHWallActive(int x, int y) {
+        boolean bo = false;
+        if (x * 2 + 2 < bu.getHeight() && y * 2 + 1 < bu.getWidth()) {
+            if (bu.getRGB(x * 2 + 2, y * 2 + 1) == (-1677216)) {
+                bo = true;
+            }
+        }
+        return bo;
+    }
+
+    @Override
+    public boolean isVWallActive(int x, int y) {
+        boolean bo = false;
+        if (x * 2 + 1 < bu.getHeight() && y * 2 + 2 < bu.getWidth()) {
+            if (bu.getRGB(x * 2 + 1, y * 2 + 2) == (-1677216)) {
+                bo = true;
+            }
+        }
+        return bo;
+    }*/
+

@@ -1,0 +1,40 @@
+package de.jpp.algorithm;
+import de.jpp.algorithm.interfaces.ObservableSearchResult;
+import de.jpp.algorithm.interfaces.SearchAlgorithm;
+import de.jpp.algorithm.interfaces.SearchResult;
+import de.jpp.algorithm.interfaces.SearchStopStrategy;
+import de.jpp.model.interfaces.WeightedGraph;
+
+public class DijkstraSearch<N, A, G extends WeightedGraph<N, A>> implements SearchAlgorithm<N, A, G> {
+
+
+    @Override
+    public SearchResult<N, A> findPaths(SearchStopStrategy<N> type) {
+        return null;
+    }
+
+    @Override
+    public SearchResult<N, A> findAllPaths() {
+        return null;
+    }
+
+    @Override
+    public ObservableSearchResult<N, A> getSearchResult() {
+        return null;
+    }
+
+    @Override
+    public N getStart() {
+        return null;
+    }
+
+    @Override
+    public G getGraph() {
+        return null;
+    }
+
+    @Override
+    public void stop() {
+
+    }
+}

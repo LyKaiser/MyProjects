@@ -1,0 +1,27 @@
+package de.jpp.io;
+
+import de.jpp.io.interfaces.ParseException;
+import de.jpp.maze.MazeAsImage;
+import de.jpp.maze.MazeImpl;
+import de.jpp.model.LabelMapGraph;
+import de.jpp.model.TwoDimGraph;
+import de.jpp.model.interfaces.Graph;
+import javafx.scene.control.Label;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+public class Main {
+    public static void main(String[] args) throws ParseException, IOException {
+        MazeImpl maze= new MazeImpl(5,3);
+        MazeAsImage mazeAsImage=new MazeAsImage();
+        BufferedImage im = mazeAsImage.getImage(maze);
+        System.out.println(im.getRGB(0,0));
+        System.out.println(im.getRGB(1,1));
+
+
+
+
+    }
+}

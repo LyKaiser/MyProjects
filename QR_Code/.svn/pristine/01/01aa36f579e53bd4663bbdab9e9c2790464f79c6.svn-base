@@ -1,0 +1,155 @@
+package jpp.qrcode.decode;
+
+import jpp.qrcode.DataBlock;
+import jpp.qrcode.ErrorCorrection;
+import jpp.qrcode.ErrorCorrectionGroup;
+import jpp.qrcode.ErrorCorrectionInformation;
+import jpp.qrcode.reedsolomon.ReedSolomon;
+import jpp.qrcode.reedsolomon.ReedSolomonException;
+
+public class DataDestructurer {
+    public static byte[] join(DataBlock[] blocks, ErrorCorrectionInformation errorCorrectionInformation) {
+
+
+        int blockAnz = errorCorrectionInformation.totalBlockCount();
+        int korrB = errorCorrectionInformation.correctionBytesPerBlock();
+        int korrGes = blockAnz * korrB;
+        byte[] data = new byte[errorCorrectionInformation.totalDataByteCount()];
+        byte[] korrBytes = new byte[korrGes];
+
+        int pos = 0;
+        for (DataBlock bl : blocks) {
+            byte[] da = bl.dataBytes();
+            for (int i = 0; i < da.length; i++) {
+                data[pos] = da[i];
+                pos++;
+            }
+        }
+        pos = 0;
+        for (DataBlock bl : blocks) {
+            byte[] corr = bl.correctionBytes();
+            for (int i = 0; i < corr.length; i++) {
+                korrBytes[pos] = corr[i];
+                pos++;
+            }
+        }
+
+		/*try {
+			ReedSolomon.correct(data,korrBytes);
+		} catch (ReedSolomonException e) {
+			throw new QRDecodeException();
+		}*/
+
+        return data;
+    }
+
+    public static DataBlock[] deinterleave(byte[] data, ErrorCorrectionInformation errorCorrectionInformation) {
+        int block = errorCorrectionInformation.totalBlockCount();
+        int korr = errorCorrectionInformation.correctionBytesPerBlock();
+        int langKorr = block * korr;
+        ErrorCorrectionGroup[] group = errorCorrectionInformation.correctionGroups();
+        int low = errorCorrectionInformation.lowerDataByteCount();
+
+        DataBlock[] result = new DataBlock[block];
+
+        int blockGr1 = group[0].blockCount();
+        int blockGr2=0;
+        if (group.length==2){
+            blockGr2 = group[1].blockCount();
+        }
+        byte[] dataBlock = new byte[blockGr1];
+        byte[] dataBlockGr = new byte[blockGr2];
+        byte[] korrBytes = new byte[korr];
+
+        int blZahl = 1;
+        int pos = 0;
+        int posKorr = data.length-langKorr;
+        for (int i = 0; i < result.length; i++) {
+            for (int j = 0; j < errorCorrectionInformation.totalBlockCount(); j++) {
+                if (blZahl <= blockGr1) {
+                    for (int a = 0; a < dataBlock.length; a++) {
+                        dataBlock[a] = data[pos + j];
+                        pos += block;
+                    }
+                    for (int b = 0; b < korrBytes.length; b++) {
+                        korrBytes[b] = data[posKorr + j];
+                        posKorr += korr;
+                    }
+                    DataBlock bl = new DataBlock(dataBlock, korrBytes);
+                    result[i] = bl;
+                    blZahl++;
+                } else {
+                    for (int c = 0; c < dataBlockGr.length; c++) {
+                        dataBlockGr[c] = data[pos + j];
+                        pos += block;
+                    }
+                    for (int d = 0; d < korrBytes.length; d++) {
+                        korrBytes[d] = data[posKorr + j];
+                        posKorr += korr;
+                    }
+                    DataBlock bl = new DataBlock(dataBlock, korrBytes);
+                    result[i] = bl;
+                }
+                pos = 0;
+                posKorr = data.length-langKorr;
+            }
+        }
+        return result;
+    }
+
+        /*int pos = 0;
+        int posKorr = data.length - langKorr;
+        for (int a = 0; a >= block; a--) {
+            pos = 0;
+            for (int i = 0; i < dataBlock.length; i++) {
+                dataBlock[i] = data[a + pos];
+                pos += errorCorrectionInformation.totalBlockCount();
+            }
+
+            for (int x = 0; x < korrBytes.length; x++) {
+                korrBytes[j] = data[posKorr];
+                posKorr += block;
+            }
+
+
+            block++;
+            pos++;
+        }
+
+
+        DataBlock db = new DataBlock()
+
+        int stelle = 0;
+        int pos = 0;
+        int korrPos = data.length - langKorr;
+        for (ErrorCorrectionGroup g : group) {
+            int bloecke = g.blockCount();
+            int dataL = g.dataByteCount();
+            while (bloecke > 0) {
+                byte[] by = new byte[dataL];
+                for (int i = 0; i < by.length; i++) {
+                    by[i] = data[pos];
+                    pos++;
+                }
+                byte[] bykorr = new byte[korr];
+                for (int j = 0; j < bykorr.length; j++) {
+                    bykorr[j] = data[korrPos];
+                    korrPos++;
+                }
+                DataBlock db = new DataBlock(by, bykorr);
+                result[stelle] = db;
+                stelle++;
+                bloecke--;
+            }
+
+
+        }
+        return result;
+    }*/
+
+    public static byte[] destructure(byte[] data, ErrorCorrectionInformation ecBlocks) throws ReedSolomonException {
+        throw new IllegalStateException();
+    }
+}
+
+

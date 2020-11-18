@@ -1,0 +1,53 @@
+package jpp.gametheory.rockPaperScissors;
+
+import jpp.gametheory.generic.*;
+
+
+public class RPSReward implements IReward<RPSChoice> {
+
+
+    @Override
+    public int getReward(IPlayer<RPSChoice> player, IGameRound<RPSChoice> gameRound) throws IllegalArgumentException {
+        if (gameRound.getPlayerChoices().get(player) == null) {
+            BenutzerException x = new BenutzerException();
+            x.error = "Spieler hat nicht mitgespielt!";
+            throw x;
+        }
+        int counter = 0;
+        String s = RPSChoice.SCISSORS.toString();
+        String r = RPSChoice.ROCK.toString();
+        String p = RPSChoice.PAPER.toString();
+        String choice = player.getStrategy().name();
+        for (IPlayer x : gameRound.getPlayerChoices().keySet()) {
+            String choiceA = x.getStrategy().name();
+            if (!(x.equals(player))) {
+                if (choice.equals(s)) {
+                    if (choiceA.equals(r)) {
+                        counter--;break;
+                    } else if (choiceA.equals(p)) {
+                        counter += 2;break;
+                    }
+                    if (choice.equals(r)) {
+                        if (choiceA.equals(s)) {
+                            counter += 2;break;
+                        } else if (choiceA.equals(p)) {
+                            counter--;break;
+                        }
+
+                        if (choice.equals(p)) {
+                            if (choiceA.equals(s)) {
+                                counter--;break;
+                            } else if (choiceA.equals(r)) {
+                                counter += 2;break;
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return counter;
+    }
+
+}

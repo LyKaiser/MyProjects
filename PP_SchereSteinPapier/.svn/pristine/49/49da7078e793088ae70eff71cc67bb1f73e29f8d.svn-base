@@ -1,0 +1,52 @@
+package jpp.gametheory.rockPaperScissors.strategies;
+
+import jpp.gametheory.generic.IGameRound;
+import jpp.gametheory.generic.IPlayer;
+import jpp.gametheory.generic.IStrategy;
+import jpp.gametheory.rockPaperScissors.RPSChoice;
+
+import java.util.List;
+
+public class MostCommon implements IStrategy<RPSChoice> {
+
+    IStrategy<RPSChoice> alternate;
+
+    public MostCommon(IStrategy<RPSChoice> alternate) {
+        this.alternate = alternate;
+    }
+
+    @Override
+    public String name() {
+        return "Most Commom Choice (Alternate: " + alternate + ")";
+    }
+
+    @Override
+    public RPSChoice getChoice(IPlayer<RPSChoice> player, List<IGameRound<RPSChoice>> previousRounds) {
+        int counterS = 0;
+        int counterR = 0;
+        int counterP = 0;
+        for (IGameRound<RPSChoice> previousRound : previousRounds) {
+            RPSChoice choice = previousRound.getChoice(player);
+            if (!choice.equals(RPSChoice.SCISSORS)) {
+                if (choice.equals(RPSChoice.ROCK)) {
+                    counterR += 1;
+                } else {
+                    counterP += 1;
+                }
+            } else {
+                counterS += 1;
+            }
+        }
+
+        if (counterS > counterR && counterS > counterP) {
+            return RPSChoice.SCISSORS;
+        } else if (counterR > counterS && counterR > counterP) {
+            return RPSChoice.ROCK;
+
+        } else if (counterP > counterS && counterS > counterR) {
+            return RPSChoice.PAPER;
+        } else {
+            return alternate.getChoice(player, previousRounds);
+        }
+    }
+}

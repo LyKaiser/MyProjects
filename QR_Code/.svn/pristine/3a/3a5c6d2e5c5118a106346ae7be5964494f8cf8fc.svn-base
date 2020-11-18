@@ -1,0 +1,86 @@
+package jpp.qrcode;
+
+public class ReservedModulesMask {
+
+    private final boolean[][] mask;
+
+    public ReservedModulesMask(boolean[][] mask) {
+        this.mask = mask;
+    }
+
+    public boolean isReserved(int i, int j) {
+        return mask[i][j];
+    }
+
+    public int size() {
+        return mask.length;
+    }
+
+    public static ReservedModulesMask forVersion(Version version) {
+        int size = version.size();
+        boolean[][] reserved = new boolean[size][size];
+
+        //OrientationPattern + Seperators + Teile Format-Info+ Teile TimingPatterns
+        for (int a = 0; a < 9; a++) {
+            for (int b = 0; b < 9; b++) {
+                reserved[a][b] = true;
+            }
+        }
+        for (int a = size - 8; a < reserved.length; a++) {
+            for (int b = 0; b < 9; b++) {
+                reserved[a][b] = true;
+            }
+        }
+        for (int a = 0; a < 9; a++) {
+            for (int b = size - 8; b < reserved[0].length; b++) {
+                reserved[a][b] = true;
+            }
+        }
+
+        //Version-Information
+        if (version.number()>6){
+        for (int a = size - 11; a < size - 8; a++) {
+            for (int b = 0; b < 7; b++) {
+                reserved[a][b] = true;
+            }
+        }
+        for (int a = 0; a < 6; a++) {
+            for (int b = size - 11; b < size - 8; b++) {
+                reserved[a][b] = true;
+            }
+        }}
+
+        //Rest TimingPatterns
+        for (int a = 9; a < size - 8; a++) {
+            for (int b = 6; b < 7; b++) {
+                reserved[a][b] = true;
+            }
+        }
+        for (int a = 6; a < 7; a++) {
+            for (int b = 9; b < size - 8; b++) {
+                reserved[a][b] = true;
+            }
+        }
+
+        //AlignmentPatterns
+        int[] align = version.alignmentPositions();
+        for (int i = 0; i<align.length;i++){
+            for (int j = 0; j<align.length;j++){
+                if (!reserved[align[j]-1][align[i]-1]){
+                    for (int a = align[j]-2; a< align[j]+3;a++){
+                        for (int b = align[i]-2; b < align[i]+3;b++){
+                            reserved[a][b] = true;
+                        }
+                    }
+
+                }
+            }
+        }
+
+        //DarkModule
+        reserved[size-8][8]=true;
+
+
+        return new ReservedModulesMask(reserved);
+    }
+}

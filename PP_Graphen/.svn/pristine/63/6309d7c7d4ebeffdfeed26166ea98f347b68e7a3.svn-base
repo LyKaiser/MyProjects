@@ -1,0 +1,22 @@
+package de.jpp.algorithm;
+import de.jpp.model.interfaces.Edge;
+import de.jpp.model.interfaces.Graph;
+import de.jpp.model.interfaces.WeightedGraph;
+
+public class DijkstraSearch<N, A, G extends WeightedGraph<N, A>> extends BreadthFirstSearchTemplate<N, A, G > {
+
+
+    public DijkstraSearch(G graph, N start) {
+        super(graph, start);
+    }
+
+    @Override
+    public NodeInformation<N, A> getNodeInformation(Edge<N, A> edge, A anno) {
+        return null;
+    }
+
+    @Override
+    public void openIfShorter(N node, NodeInformation<N, A> info) {
+
+    }
+}

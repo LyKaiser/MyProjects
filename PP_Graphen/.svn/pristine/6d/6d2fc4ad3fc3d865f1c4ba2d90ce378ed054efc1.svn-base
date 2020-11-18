@@ -1,0 +1,40 @@
+package de.jpp.algorithm;
+
+import de.jpp.algorithm.interfaces.ObservableSearchResult;
+import de.jpp.algorithm.interfaces.SearchAlgorithm;
+import de.jpp.algorithm.interfaces.SearchResult;
+import de.jpp.algorithm.interfaces.SearchStopStrategy;
+import de.jpp.model.TwoDimGraph;
+import de.jpp.model.XYNode;
+
+public class DepthFirstSearch implements SearchAlgorithm<XYNode,Double, TwoDimGraph> {
+    @Override
+    public SearchResult<XYNode, Double> findPaths(SearchStopStrategy<XYNode> type) {
+        return null;
+    }
+
+    @Override
+    public SearchResult<XYNode, Double> findAllPaths() {
+        return null;
+    }
+
+    @Override
+    public ObservableSearchResult<XYNode, Double> getSearchResult() {
+        return null;
+    }
+
+    @Override
+    public XYNode getStart() {
+        return null;
+    }
+
+    @Override
+    public TwoDimGraph getGraph() {
+        return null;
+    }
+
+    @Override
+    public void stop() {
+
+    }
+}

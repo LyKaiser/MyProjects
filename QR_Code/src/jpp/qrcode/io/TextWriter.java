@@ -1,0 +1,83 @@
+package jpp.qrcode.io;
+
+import java.io.*;
+import java.util.Arrays;
+
+public class TextWriter {
+
+    public static void write(OutputStream stream, boolean[][] data) throws IOException {
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data[0].length; j++) {
+                if (data[i][j]) {
+                    sb.append("1");
+
+                } else sb.append("0");
+
+            }
+            sb.append("\n");
+        }
+        String st = sb.toString();
+        byte[] matrix = st.getBytes();
+        stream.write(matrix);
+    }
+}
+
+
+
+
+
+        /*String[] matrix = new String[(data.length + 1) * (data.length + 1)];
+        int a = 0;
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data[i].length; j++) {
+                if (data[i][j]) {
+                    matrix[a] = " 1";
+                    a++;
+                } else {
+                    matrix[a] = " 0";
+                    a++;
+                }
+                matrix[a] = "\n";
+                a++;
+            }
+        }
+        byte[] matr = new byte[matrix.length];
+        matr=matrix.
+    }
+}
+
+
+
+        byte [] zeilen = new byte[matrix.length];
+        BufferedWriter bw = new BufferedWriter(new FileWriter(sb))
+        for (int i = 0; i < matrix.length; i++){
+            for (int j = 0; j < matrix[i].length; j++)
+            zeilen[j]=matrix[i][j];
+
+        }
+        stream.
+
+
+    }
+}
+        StringBuilder sb = new StringBuilder();
+        for (int i=0; i<data.length;i++){
+            for (int j=0; j<data[0].length;j++){
+                if (data[i][j]){
+                    sb.append(" ").append("1");
+
+                }
+                else sb.append(" ").append("0");
+
+            }
+            sb.append("\n");
+        }
+
+        FileWriter fi = new FileWriter(sb.toString());
+        stream=fi.;
+
+
+    }
+}*/

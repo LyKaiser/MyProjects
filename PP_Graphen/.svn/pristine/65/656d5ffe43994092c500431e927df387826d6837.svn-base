@@ -1,0 +1,20 @@
+package de.jpp.algorithm;
+
+import de.jpp.algorithm.interfaces.EstimationFunction;
+import de.jpp.model.interfaces.Edge;
+import de.jpp.model.interfaces.WeightedGraph;
+
+
+public class AStarSearch<N, A, G extends WeightedGraph<N, A>> extends DijkstraSearch<N,A,G> implements EstimationFunction {
+
+    N dest;
+
+    public AStarSearch(G graph, N start) {
+        super(graph, start);
+    }
+
+    @Override
+    public double getEstimatedDistance(Object node, Object destination) {
+        return 0;
+    }
+}

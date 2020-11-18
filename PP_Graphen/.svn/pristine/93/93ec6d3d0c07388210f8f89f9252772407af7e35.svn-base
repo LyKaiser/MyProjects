@@ -1,0 +1,69 @@
+package de.jpp.maze;
+
+import java.util.Random;
+
+public class MazeRandom {
+
+    private MazeImpl maze;
+    private Random ran;
+    private int width;
+    private int height;
+
+    public MazeRandom(MazeImpl maze, Random ran) {
+        this.maze = maze;
+        this.ran = ran;
+        width = maze.getWidth();
+        height = maze.getHeight();
+    }
+
+    public Maze unterteile(int widthNeu, int heightNeu) {
+        if (width != 1 && height != 1) {
+            if (widthNeu > heightNeu) {
+                unterteileLabyHorizontal();
+            } else if (heightNeu > widthNeu) {
+                unterteileLabyVertikal();
+            } else {
+                boolean bool = ran.nextBoolean();
+                if (bool) {
+                    unterteileLabyHorizontal();
+                } else unterteileLabyVertikal();
+            }
+        }
+        return maze;
+
+    }
+
+    public void unterteileLabyHorizontal() {
+
+        int ran1 = ran.nextInt(width - 1);
+        int ran2 = ran.nextInt(height - 1);
+
+        for (int i = 1; i < height; i++) {
+            if (i != ran2) {
+                maze.setHWall(ran1, i, true);
+            }
+        }
+        unterteile(ran1, height);
+        unterteile(width - ran1, height);
+
+
+    }
+
+    public void unterteileLabyVertikal() {
+        int ran1 = ran.nextInt(height - 1);
+        int ran2 = ran.nextInt(width - 1);
+
+        for (int i = 1; i < width; i++) {
+            if (i != ran2) {
+                maze.setVWall(i, ran1, true);
+            }
+        }
+        //Maze neulinks= new MazeImpl(ran1,height);
+        //Maze neurechts= new MazeImpl(width-ran1,height);
+
+        unterteile(width, ran1);
+        unterteile(width, height - ran1);
+    }
+
+
+}

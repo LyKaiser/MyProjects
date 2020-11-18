@@ -1,0 +1,4 @@
+package jpp.gametheory.generic;
+
+public class Game<C extends IChoice> {
+}

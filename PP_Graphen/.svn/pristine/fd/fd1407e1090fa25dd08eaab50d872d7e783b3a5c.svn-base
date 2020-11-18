@@ -1,0 +1,133 @@
+package de.jpp.maze;
+
+import de.jpp.io.interfaces.GraphReader;
+import de.jpp.io.interfaces.ParseException;
+import de.jpp.maze.Maze;
+import de.jpp.maze.MazeImpl;
+import de.jpp.model.TwoDimGraph;
+import de.jpp.model.XYNode;
+import de.jpp.model.interfaces.Edge;
+import de.jpp.model.interfaces.Graph;
+
+import java.util.*;
+
+public class MazeReader implements GraphReader<XYNode, Double, TwoDimGraph, MazeImpl> {
+
+    @Override
+    public TwoDimGraph read(MazeImpl input) throws ParseException {
+        TwoDimGraph graph = new TwoDimGraph();
+        //boolean[][] cells = input.getCells();
+        boolean[][] hWalls = input.gethWall();
+        boolean[][] vWalls = input.getvWall();
+        /*Set<XYNode> nodes = new HashSet<>();
+        int counterNode = 0;
+        for (int i = 0; i < cells.length; i++) {
+            for (int j = 0; j < cells[i].length; j++) {
+                counterNode++;
+                XYNode node = new XYNode("n" + counterNode, i + 2 + 1, j + 2 + 1);
+                nodes.add(node);
+                graph.addNode(node);
+            }
+        }*/
+        int width = input.getWidth() * 2 + 1;
+        int height = input.getHeight() * 2 + 1;
+        boolean[][] walls = new boolean[input.getWidth() * 2 + 1][input.getHeight() * 2 + 1];
+        for (int i = 0; i < width; i++) {
+            walls[i][0] = true;
+            walls[i][height - 1] = true;
+        }
+        for (int i = 0; i < height; i++) {
+            walls[0][i] = true;
+            walls[width - 1][i] = true;
+        }
+        for (int i = 2; i < width - 2; i += 2) {
+            for (int j = 2; j < height - 2; j += 2) {
+                walls[i][j] = true;
+            }
+        }
+
+        int posI = 1;
+        int posJ = 2;
+
+        for (int x = 0; x < vWalls.length; x++) {
+            for (int y = 0; y < vWalls[x].length; y++) {
+                if (posI < width && posJ < height) {
+                    if (vWalls[x][y]) {
+                        walls[posI][posJ] = true;
+                        posI += 2;
+                        posJ += 2;
+                    }
+                }
+            }
+        }
+
+        posI = 2;
+        posJ = 1;
+
+        for (int x = 0; x < hWalls.length; x++) {
+            for (int y = 0; y < hWalls[x].length; y++) {
+                if (posI < width && posJ < height) {
+                    if (hWalls[x][y]) {
+                        walls[posI][posJ] = true;
+                        posI += 2;
+                        posJ += 2;
+                    }
+                }
+            }
+        }
+        Map<String, XYNode> ids = new HashMap<>();
+        int counterNode = 0;
+        for (int i = 1; i < walls.length - 1; i++) {
+            for (int j = 1; j < walls[i].length - 1; j++) {
+                if (walls[i][j]) {
+                    counterNode++;
+                    XYNode node = new XYNode("n" + counterNode, i, j);
+
+                    String s = String.valueOf(node.getX()) + String.valueOf(node.getY());
+                    ids.put(s, node);
+                    graph.addNode(node);
+                }
+            }
+        }
+        int counterEdge = 0;
+        for (int i = 1; i < walls.length - 1; i++) {
+            for (int j = 1; j < walls[i].length - 1; j++) {
+                if (walls[i][j]) {
+                    //oben
+                    if (walls[i][j - 1] = false) {
+                        String sStart = String.valueOf(i) + String.valueOf(j);
+                        String sDest = String.valueOf(i) + String.valueOf(j - 1);
+                        XYNode start = ids.get(sStart);
+                        XYNode dest = ids.get(sDest);
+                        graph.addEdge(start, dest, Optional.of(start.euclidianDistTo(dest)));
+                    }
+                    //unten
+                    if (walls[i][j + 1] = false) {
+                        String sStart = String.valueOf(i) + String.valueOf(j);
+                        String sDest = String.valueOf(i) + String.valueOf(j + 1);
+                        XYNode start = ids.get(sStart);
+                        XYNode dest = ids.get(sDest);
+                        graph.addEdge(start, dest, Optional.of(start.euclidianDistTo(dest)));
+                    }
+                    //rechts
+                    if (walls[i + 1][j] = false) {
+                        String sStart = String.valueOf(i) + String.valueOf(j);
+                        String sDest = String.valueOf(i + 1) + String.valueOf(j);
+                        XYNode start = ids.get(sStart);
+                        XYNode dest = ids.get(sDest);
+                        graph.addEdge(start, dest, Optional.of(start.euclidianDistTo(dest)));
+                    }
+                    //links
+                    if (walls[i - 1][j] = false) {
+                        String sStart = String.valueOf(i) + String.valueOf(j);
+                        String sDest = String.valueOf(i - 1) + String.valueOf(j);
+                        XYNode start = ids.get(sStart);
+                        XYNode dest = ids.get(sDest);
+                        graph.addEdge(start, dest, Optional.of(start.euclidianDistTo(dest)));
+                    }
+                }
+            }
+        }
+        return graph;
+    }
+}

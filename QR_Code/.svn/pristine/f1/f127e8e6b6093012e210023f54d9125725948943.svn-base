@@ -1,0 +1,144 @@
+package jpp.qrcode;
+
+public class QRCode {
+
+    private final boolean[][] validatedQrCode;
+    private final Version version;
+    private final MaskPattern pattern;
+    private final ErrorCorrection correction;
+
+    public QRCode(boolean[][] validatedQrCode, Version version, MaskPattern pattern, ErrorCorrection correction) {
+        this.validatedQrCode = validatedQrCode;
+        this.version = version;
+        this.pattern = pattern;
+        this.correction = correction;
+    }
+
+    public Version version() {
+        return version;
+    }
+
+    public boolean[][] data() {
+        return validatedQrCode;
+    }
+
+    public MaskPattern maskPattern() {
+        return pattern;
+    }
+
+    public ErrorCorrection errorCorrection() {
+        return correction;
+    }
+
+    public String matrixToString() {
+        StringBuilder s = new StringBuilder();
+        char c;
+        for (boolean[] spalte : validatedQrCode) {
+            s.append('\n');
+            for (boolean b : spalte) {
+                if (b) {
+                    c = 0x2588;
+                    s.append(c).append(c);
+                } else c = 0x2591;
+                s.append(c).append(c);
+            }
+
+        }
+        s.deleteCharAt(0);
+        return s.toString();
+    }
+
+    public static QRCode createValidatedFromBooleans(boolean[][] matrix) throws InvalidQRCodeException {
+        int x = matrix.length;
+        int y = matrix[0].length;
+        int z = x * y;
+        int vers = x - 17;
+        if (matrix == null || x == 0 || y == 0 || (x != y)) {
+            throw new InvalidQRCodeException();
+        } else if (vers % 4 != 0) {
+            throw new InvalidQRCodeException();
+        }
+
+        int size = matrix.length;
+        //OrientationPattern + Seperators + Teile Format-Info+ Teile TimingPatterns
+        for (int a = 0; a < 9; a++) {
+            for (int b = 0; b < 9; b++) {
+                if (!(matrix[a][b] = true)) {
+                    throw new InvalidQRCodeException();
+
+                }
+            }
+        }
+        for (int a = size - 8; a < matrix.length; a++) {
+            for (int b = 0; b < 9; b++) {
+                if (!(matrix[a][b] = true)) {
+                    throw new InvalidQRCodeException();
+                }
+            }
+        }
+        for (int a = 0; a < 9; a++) {
+            for (int b = size - 8; b < matrix[0].length; b++) {
+                if (!(matrix[a][b] = true)) {
+                    throw new InvalidQRCodeException();
+                }
+            }
+        }
+
+        //Version-Information
+        for (int a = size - 10; a < size - 8; a++) {
+            for (int b = 0; b < 7; b++) {
+                if (!(matrix[a][b] = true)) {
+                    throw new InvalidQRCodeException();
+                }
+            }
+        }
+        for (int a = 0; a < 6; a++) {
+            for (int b = size - 10; b < size - 8; b++) {
+                if (!(matrix[a][b] = true)) {
+                    throw new InvalidQRCodeException();
+                }
+            }
+        }
+
+        //Rest TimingPatterns
+        for (int a = 9; a < size - 8; a++) {
+            for (int b = 6; b < 7; b++) {
+                if (!(matrix[a][b] = true)) {
+                    throw new InvalidQRCodeException();
+                }
+            }
+        }
+        for (int a = 6; a < 7; a++) {
+            for (int b = 9; b < size - 8; b++) {
+                if (!(matrix[a][b] = true)) {
+                    throw new InvalidQRCodeException();
+                }
+            }
+        }
+
+        int versio = matrix.length - 17 / 4;
+        Version v = Version.fromNumber(versio);
+        int[] align = v.alignmentPositions();
+        for (int i = 0; i < align.length; i++) {
+            for (int a = align[i] - 2; a < align[i] + 3; a++) {
+                for (int b = align[i] - 2; b < align[i] + 3; b++) {
+                    if (!(matrix[a][b] = true)) {
+                        throw new InvalidQRCodeException();
+                    }
+                }
+            }
+        }
+
+        int versioInfo = VersionInformation.forVersion(v);
+        Version versioGes = VersionInformation.fromBits(versioInfo);
+        int versioNr = versioGes.number();
+        if (versio > 6) {
+            if (versioGes == null || versio != versioNr) {
+                throw new InvalidQRCodeException();
+            }
+        }
+
+
+        return null;
+    }
+}

@@ -1,0 +1,46 @@
+package jpp.qrcode.encode;
+
+import jpp.qrcode.DataBlock;
+import jpp.qrcode.ErrorCorrection;
+import jpp.qrcode.ErrorCorrectionGroup;
+import jpp.qrcode.ErrorCorrectionInformation;
+import jpp.qrcode.reedsolomon.ReedSolomon;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class DataStructurer {
+
+    public static DataBlock[] split(byte[] data, ErrorCorrectionInformation errorCorrectionInformation) {
+
+        //int bytezahl=errorCorrectionInformation.totalByteCount();
+        //int datenbytezKl=errorCorrectionInformation.lowerDataByteCount();
+        //ErrorCorrectionGroup[] korrGr = errorCorrectionInformation.correctionGroups();
+        int correction = errorCorrectionInformation.correctionBytesPerBlock();
+        int blockAnzahl = errorCorrectionInformation.totalBlockCount();
+        int langBlock = data.length / blockAnzahl;
+        DataBlock[] result = new DataBlock[blockAnzahl];
+
+        int pos = 0;
+        for (int i = 0; i < result.length; i++) {
+            byte[] block = new byte[langBlock];
+            for (int j = 0; j < block.length; j++) {
+                block[j] = data[pos];
+                pos++;
+            }
+            byte[] korrSingle = ReedSolomon.calculateCorrectionBytes(block, correction);
+            DataBlock teil = new DataBlock(block,korrSingle);
+            result[i]=teil;
+
+        }
+        return result;
+    }
+
+    public static byte[] interleave(DataBlock[] blocks, ErrorCorrectionInformation ecBlocks) {
+        throw new IllegalStateException();
+    }
+
+    public static byte[] structure(byte[] data, ErrorCorrectionInformation ecBlocks) {
+        throw new IllegalStateException();
+    }
+}
